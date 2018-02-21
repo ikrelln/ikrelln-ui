@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Trace from '../containers/Trace';
 import { Route, Switch, Redirect, NavLink, Link } from 'react-router-dom';
 import { Loading } from './Loading';
+import { TestResult } from '../containers/TestResults';
 
 export class TestDetails extends Component {
     componentDidMount() {
@@ -12,6 +13,8 @@ export class TestDetails extends Component {
         if (this.props.test === undefined) {
             return (<Loading />);
         }
+
+        this.props.test.test.last_traces.map(trace_id => this.props.fetchTestResult(trace_id));
 
         let executions_enabled = this.props.test.test.last_traces.length > 0;
         let children_enabled = this.props.test.test.children.length > 0;
@@ -48,6 +51,9 @@ export class TestDetails extends Component {
                         this.props.fetchTestResult(match.params.trace_id);
                         return (<Trace trace_id={match.params.trace_id} />)
                     }} />
+                    <Route path="/tests/:test_id/previous" render={() => {
+                        return (<Previous test_id={this.props.test.test.test_id} previous={this.props.test.test.last_traces} />)
+                    }} />
                     <Route path="/tests/:test_id/children" render={() => {
                         return (<Children children={this.props.test.test.children} />)
                     }} />
@@ -82,4 +88,16 @@ class TestChild extends Component {
             </div>
         );
     }
+}
+
+class Previous extends Component {
+    render() {
+        return (
+            <div>
+                {this.props.previous.map(trace_id => (
+                    <TestResult key={trace_id} trace_id={trace_id} />
+                ))}
+            </div>
+        );
+    }    
 }

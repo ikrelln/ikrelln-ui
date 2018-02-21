@@ -5,6 +5,10 @@ import dateFormat from 'dateformat';
 import { formatDuration, statusToColorSuffix } from '../helper';
 
 class TestResultsList extends Component {
+    componentDidMount() {
+        this.props.fetchTestResults();
+    }
+
     render() {
         if (this.props.testDetails.testResults.length === 0) {
             return (<Loading />);
@@ -22,8 +26,12 @@ class TestResultsList extends Component {
 export default TestResultsList;
 
 
-class TestResult extends Component {
+export class TestResult extends Component {
     render() {
+        if (this.props.testResult === undefined) {
+            return null;
+        }
+
         let status_class = "alert" + statusToColorSuffix(this.props.testResult.status);
 
         return (

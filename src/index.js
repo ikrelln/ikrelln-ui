@@ -12,14 +12,10 @@ import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 import { BrowserRouter } from 'react-router-dom'
 import iKrelln from './reducers'
-import { fetchTestResults } from './actions/testDetails';
 
 let store = createStore(iKrelln, applyMiddleware(
     thunkMiddleware)
 )
-
-store
-    .dispatch(fetchTestResults())
 
 ReactDOM.render(
     <Provider store={store}>
