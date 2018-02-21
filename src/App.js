@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import './App.css';
 import TestSuiteFilter from './containers/TestSuiteFilter';
+import Link from 'react-router-dom/Link';
+import { Route, Switch } from 'react-router-dom';
+import TestResults from './containers/TestResults';
+import TestDetails from './containers/TestDetails';
+import { fetchTest } from './actions/testDetails';
 
 class App extends Component {
   render() {
@@ -9,7 +14,17 @@ class App extends Component {
         <header className="App-header">
           <h1 className="App-title">i'Krelln</h1>
         </header>
-        <TestSuiteFilter />
+        <Link to="/results">Results</Link> - <Link to="/tests">Tests</Link> - <Link to="/setup">Set Up</Link>
+        <Switch>
+          <Route path="/tests/:test_id" render={({match}) => {
+            this.props.store.dispatch(fetchTest(match.params.test_id));
+            return (<TestDetails test_id={match.params.test_id} match={match} />)
+          }} />
+          <Route path="/results" component={TestResults} />
+          <Route path="/tests" component={TestSuiteFilter} />
+          <Route path="/setup" render={() => <h1>setup</h1>} />
+          <Route component={TestResults} />
+        </Switch>
       </div>
     );
   }

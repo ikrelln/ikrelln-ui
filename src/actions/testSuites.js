@@ -17,7 +17,7 @@ function receiveTestSuites(json) {
 export function fetchTestSuites() {
     return dispatch => {
         dispatch(requestTestSuites())
-        return fetch('http://localhost:7878/api/v1/tests')
+        return fetch('/api/v1/tests')
             .then(response => response.json())
             .then(json => dispatch(receiveTestSuites(json)))
     }

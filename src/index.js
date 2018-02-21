@@ -8,7 +8,9 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
+import { BrowserRouter } from 'react-router-dom'
 import iKrelln from './reducers'
+import { fetchTestResults } from './actions/testDetails';
 import { fetchTestSuites } from './actions/testSuites';
 
 let store = createStore(iKrelln, applyMiddleware(
@@ -16,12 +18,16 @@ let store = createStore(iKrelln, applyMiddleware(
 )
 
 store
+    .dispatch(fetchTestResults())
+
+store
     .dispatch(fetchTestSuites())
-    .then(() => console.log(store.getState()))
 
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+        <BrowserRouter>
+            <App store={store}/>
+        </BrowserRouter>
     </Provider>,
     document.getElementById('root')
 );

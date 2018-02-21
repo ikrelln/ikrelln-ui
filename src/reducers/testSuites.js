@@ -1,4 +1,3 @@
-import fetch from 'cross-fetch'
 import { REQUEST_TEST_SUITES, RECEIVE_TEST_SUITES } from '../actions/testSuites';
 
 

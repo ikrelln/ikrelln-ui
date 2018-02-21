@@ -22,3 +22,16 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.test-neutral {
+  background: rgba(30, 129, 196, 0.3)
+}
+.test-success {
+  background: rgba(47, 233, 10, 0.3)
+}
+.test-failure {
+  background: rgba(211, 11, 11, 0.3)
+}
+.test-skipped {
+  background: rgba(245, 241, 7, 0.3)
+}
