@@ -5,7 +5,8 @@ import Link from 'react-router-dom/Link';
 import { Route, Switch } from 'react-router-dom';
 import TestResults from './containers/TestResults';
 import TestDetails from './containers/TestDetails';
-import { fetchTest } from './actions/testDetails';
+import TraceRedirect from './containers/TraceRedirect';
+import { fetchTest, fetchTestResultForTrace } from './actions/testDetails';
 
 class App extends Component {
   render() {
@@ -16,6 +17,10 @@ class App extends Component {
         </header>
         <Link to="/results">Results</Link> - <Link to="/tests">Tests</Link> - <Link to="/setup">Set Up</Link>
         <Switch>
+          <Route path="/trace/:trace_id" render={({match}) => {
+              this.props.store.dispatch(fetchTestResultForTrace(match.params.trace_id));
+              return (<TraceRedirect trace_id={match.params.trace_id} />)
+            }} />
           <Route path="/tests/:test_id" render={({match}) => {
             this.props.store.dispatch(fetchTest(match.params.test_id));
             return (<TestDetails test_id={match.params.test_id} match={match} />)
