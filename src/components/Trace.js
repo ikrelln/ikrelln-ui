@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
+import { Loading } from './Loading';
 
 export class Trace extends Component {
     render() {
         if (this.props.spans === undefined) {
-            return null;
+            return (<Loading />);
         }
         if (this.props.testResult === undefined) {
-            return null;
+            return (<Loading />);
         }
 
         var status_class = "test-success";

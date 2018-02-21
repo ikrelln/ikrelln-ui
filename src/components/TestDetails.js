@@ -3,11 +3,12 @@ import Link from 'react-router-dom/Link';
 import Trace from '../containers/Trace';
 import { Route, Switch } from 'react-router-dom';
 import { fetchTrace } from '../actions/testDetails';
+import { Loading } from './Loading';
 
 export class TestDetails extends Component {
     render() {
         if (this.props.test === undefined) {
-            return null;
+            return (<Loading />);
         }
 
         return (
