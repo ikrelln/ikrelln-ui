@@ -5,6 +5,7 @@
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "cross-fetch": "^1.1.1",
+    "dateformat": "^3.0.3",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",

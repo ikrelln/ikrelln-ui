@@ -14,6 +14,9 @@ const testDetails = (state = { testResults: [], traces: [], tests: [] }, action)
                 lastUpdated: action.receivedAt
             })
         case RECEIVE_TEST_RESULT_FOR_TRACE:
+            if (state.testResults.find(tr => tr.trace_id === action.testResult[0].trace_id) !== undefined) {
+                return state;
+            }
             return Object.assign({}, state, {
                 testResults: [...state.testResults, action.testResult[0]],
             })

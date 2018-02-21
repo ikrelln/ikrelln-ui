@@ -13,7 +13,6 @@ import { createStore, applyMiddleware } from 'redux'
 import { BrowserRouter } from 'react-router-dom'
 import iKrelln from './reducers'
 import { fetchTestResults } from './actions/testDetails';
-import { fetchTestSuites } from './actions/testSuites';
 
 let store = createStore(iKrelln, applyMiddleware(
     thunkMiddleware)
@@ -22,13 +21,10 @@ let store = createStore(iKrelln, applyMiddleware(
 store
     .dispatch(fetchTestResults())
 
-store
-    .dispatch(fetchTestSuites())
-
 ReactDOM.render(
     <Provider store={store}>
         <BrowserRouter>
-            <App store={store}/>
+            <App />
         </BrowserRouter>
     </Provider>,
     document.getElementById('root')

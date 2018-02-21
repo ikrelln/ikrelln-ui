@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import { TraceRedirect as component } from '../components/TraceRedirect';
+import { fetchTestResultForTrace } from '../actions/testDetails';
 
 const mapStateToProps = (state, props) => {
     return {
@@ -8,7 +9,9 @@ const mapStateToProps = (state, props) => {
 }
 
 const mapDispatchToProps = dispatch => {
-    return {}
+    return {
+        fetchTestResultForTrace: (trace_id) => dispatch(fetchTestResultForTrace(trace_id)),
+    }
 }
 
 const TraceRedirect = connect(
