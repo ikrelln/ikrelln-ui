@@ -6,7 +6,9 @@ import { TestResult } from '../containers/TestResults';
 
 export class TestDetails extends Component {
     componentDidMount() {
-        this.props.fetchTest(this.props.test_id);
+        if (this.props.test === undefined) {
+            this.props.fetchTest(this.props.test_id);
+        }
     }
     
     render() {
