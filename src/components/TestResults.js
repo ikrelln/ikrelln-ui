@@ -44,7 +44,7 @@ export class TestResult extends Component {
             <div className={"alert " + status_class}>
                 <div style={{display: "flex", justifyContent: "space-around"}}>
                     <div style={{flex: "10"}}>
-                        <Link className="alert-link" to={"/ikrelln/tests/" + this.props.testResult.test_id + "/trace/" + this.props.testResult.trace_id}>
+                        <Link className="alert-link" to={"/ikrelln/tests/" + this.props.testResult.test_id + "/traces/" + this.props.testResult.trace_id}>
                             <nav aria-label="breadcrumb">
                                 <ol className="breadcrumb" style={{padding: "0rem", margin: "0rem", backgroundColor: "inherit"}}>
                                     {this.props.testResult.path.map(item => (
@@ -68,7 +68,7 @@ export class TestResult extends Component {
                     </div>
                     {(this.props.compare_to !== undefined) && (this.props.compare_to !== this.props.testResult.trace_id) ? 
                         (<div style={{flex: "1"}}>
-                            <Link to={"/ikrelln/tests/" + this.props.testResult.test_id + "/comparetrace/" + this.props.compare_to + "/" + this.props.testResult.trace_id}>Compare to latest</Link>
+                            <Link to={"/ikrelln/tests/" + this.props.testResult.test_id + "/traces/" + this.props.compare_to + "/compare/" + this.props.testResult.trace_id}>Compare to latest</Link>
                         </div>)
                         : null}
                 </div>
