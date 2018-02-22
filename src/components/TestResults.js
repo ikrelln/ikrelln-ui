@@ -10,12 +10,14 @@ class TestResultsList extends Component {
     }
 
     render() {
-        if (this.props.testDetails.testResults.length === 0) {
-            return (<Loading />);
-        }
         return (
             <div>
-                {this.props.testDetails.testResults.map(testResult => (
+                <TestResultFilter fetchAndFilterTestResults={this.props.fetchAndFilterTestResults} status={this.props.status_filter}/>
+                {this.props.test_results.filter(tr => {
+                    if (this.props.status_filter === "Any")
+                        return true;
+                    return (this.props.status_filter === tr.status);
+                }).map(testResult => (
                     <TestResult key={testResult.trace_id} testResult={testResult} trace_id={testResult.trace_id}/>
                 ))}
             </div>
@@ -74,5 +76,34 @@ export class TestResult extends Component {
                 </div>
             </div>
         );
+    }
+}
+
+class TestResultFilter extends Component {
+    constructor(props) {
+        super(props);
+    
+        this.handleChange = this.handleChange.bind(this);
+    }
+    
+    handleChange(event) {
+        this.props.fetchAndFilterTestResults(event.target.value);
+    }
+
+    render() {
+        return (
+        <div>
+            <div className="input-group mb-3">
+            <div className="input-group-prepend">
+                <label className="input-group-text">Filter by status</label>
+            </div>
+            <select className="custom-select" id="input-test-result-status-filter" onChange={this.handleChange} value={this.props.status}>
+                <option>Any</option>
+                <option>Success</option>
+                <option>Failure</option>
+                <option>Skipped</option>
+            </select>
+            </div>
+        </div>);
     }
 }

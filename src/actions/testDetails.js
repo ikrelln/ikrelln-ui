@@ -1,26 +1,3 @@
-export const REQUEST_TEST_RESULTS = 'REQUEST_TEST_RESULTS'
-function requestTestResults() {
-    return {
-        type: REQUEST_TEST_RESULTS
-    }
-}
-export const RECEIVE_TEST_RESULTS = 'RECEIVE_TEST_RESULTS'
-function receiveTestResults(json) {
-    return {
-        type: RECEIVE_TEST_RESULTS,
-        testResults: json,
-        receivedAt: Date.now()
-    }
-}
-export function fetchTestResults() {
-    return dispatch => {
-        dispatch(requestTestResults())
-        return fetch('/api/v1/testresults')
-            .then(response => response.json())
-            .then(json => dispatch(receiveTestResults(json)))
-    }
-}
-
 export const REQUEST_TEST_RESULT_FOR_TRACE = 'REQUEST_TEST_RESULT_FOR_TRACE'
 function requestTestResultForTrace() {
     return {

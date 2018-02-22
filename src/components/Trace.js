@@ -5,10 +5,11 @@ import dateFormat from 'dateformat';
 
 export class Trace extends Component {
     componentDidMount() {
+        console.log(this.props);
         if (this.props.spans === undefined) {
             this.props.fetchTrace(this.props.trace_id);
         }
-        if (this.props.testResult === undefined) {
+        if (this.props.result === undefined) {
             this.props.fetchTestResultForTrace(this.props.trace_id);
         }
     }
@@ -17,24 +18,24 @@ export class Trace extends Component {
         if (this.props.spans === undefined) {
             return (<Loading />);
         }
-        if (this.props.testResult === undefined) {
+        if (this.props.result === undefined) {
             return (<Loading />);
         }
 
-        let status_class = "alert" + statusToColorSuffix(this.props.testResult.status);
+        let status_class = "alert" + statusToColorSuffix(this.props.result.status);
 
         return (
             <div>
-                <div className={"alert  " + status_class} style={{fontSize: "1.5rem", fontWeight: "bold"}}>{this.props.testResult.status}</div>
+                <div className={"alert  " + status_class} style={{fontSize: "1.5rem", fontWeight: "bold"}}>{this.props.result.status}</div>
                 <div style={{display: "flex"}}>
                     <div style={{flex: "2"}}>
-                        {dateFormat(new Date(this.props.testResult.date / 1000), "isoDateTime")}
+                        {dateFormat(new Date(this.props.result.date / 1000), "isoDateTime")}
                     </div>
                     <div style={{flex: "1"}}>
-                        {formatDuration(this.props.testResult.duration)}
+                        {formatDuration(this.props.result.duration)}
                     </div>
                     <div style={{flex: "1"}}>
-                        {this.props.testResult.environment}
+                        {this.props.result.environment}
                     </div>
                 </div>
 
@@ -98,14 +99,15 @@ export class TraceComparator extends Component {
         if (this.props.testResultWith === undefined) {
             return (<Loading />);
         }
+        console.log(this.props);
 
         return (
             <div style={{display: "flex"}}>
                 <div style={{width: "50%", paddingRight: "5px"}}>
-                    <Trace key={this.props.base} trace_id={this.props.base} spans={this.props.spansBase} testResult={this.props.testResultBase} />
+                    <Trace key={this.props.base} trace_id={this.props.base} spans={this.props.spansBase} result={this.props.testResultBase} />
                 </div>
                 <div style={{width: "50%", paddingLeft: "5px"}}>
-                    <Trace key={this.props.with} trace_id={this.props.with} spans={this.props.spansWith} testResult={this.props.testResultWith} />
+                    <Trace key={this.props.with} trace_id={this.props.with} spans={this.props.spansWith} result={this.props.testResultWith} />
                 </div>
                 </div>
         );

@@ -1,17 +1,20 @@
 import { connect } from 'react-redux'
 import TestResultsList from '../components/TestResults';
 import { TestResult as component } from '../components/TestResults';
-import { fetchTestResults, fetchTestResultForTrace } from '../actions/testDetails';
+import { fetchTestResultForTrace } from '../actions/testDetails';
+import { fetchTestResults, fetchAndFilterTestResults } from '../actions/testResults';
 
 const mapStateToProps = state => {
     return {
-        testDetails: state.testDetails
+        test_results: state.testResults.results,
+        status_filter: state.testResults.status_filter,
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
         fetchTestResults: () => dispatch(fetchTestResults()),
+        fetchAndFilterTestResults: (status) => dispatch(fetchAndFilterTestResults(status))
     }
 }
 
@@ -24,7 +27,7 @@ export default TestResults
 
 const mapStateToPropsTestResult = (state, props) => {
     return {
-        testResult: state.testDetails.testResults.find(tr => tr.trace_id === props.trace_id),
+        testResult: state.testResults.results.find(tr => tr.trace_id === props.trace_id),
     }
 }
 const mapDispatchToPropsTestResult = dispatch => {
