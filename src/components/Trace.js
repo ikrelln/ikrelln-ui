@@ -3,6 +3,8 @@ import { Loading } from './Loading';
 import { formatDuration, statusToColorSuffix } from '../helper';
 import dateFormat from 'dateformat';
 
+import { Trace as TraceContainer } from '../containers/Trace'
+
 export class Trace extends Component {
     componentDidMount() {
         if (this.props.spans === undefined) {
@@ -66,5 +68,48 @@ class Span extends Component {
             </div>
         );
 
+    }
+}
+
+export class TraceComparator extends Component {
+    componentDidMount() {
+        if (this.props.spansBase === undefined) {
+            this.props.fetchTrace(this.props.base);
+        }
+        if (this.props.testResultBase === undefined) {
+            this.props.fetchTestResultForTrace(this.props.base);
+        }
+        if (this.props.spansWith === undefined) {
+            this.props.fetchTrace(this.props.with);
+        }
+        if (this.props.testResultWith === undefined) {
+            this.props.fetchTestResultForTrace(this.props.with);
+        }
+    }
+
+    render() {
+        if (this.props.spansBase === undefined) {
+            return (<Loading />);
+        }
+        if (this.props.testResultBase === undefined) {
+            return (<Loading />);
+        }
+        if (this.props.spansWith === undefined) {
+            return (<Loading />);
+        }
+        if (this.props.testResultWith === undefined) {
+            return (<Loading />);
+        }
+
+        return (
+            <div style={{display: "flex"}}>
+                <div style={{width: "50%", paddingRight: "5px"}}>
+                    <Trace key={this.props.base} trace_id={this.props.base} spans={this.props.spansBase} testResult={this.props.testResultBase} />
+                </div>
+                <div style={{width: "50%", paddingLeft: "5px"}}>
+                    <Trace key={this.props.with} trace_id={this.props.with} spans={this.props.spansWith} testResult={this.props.testResultWith} />
+                </div>
+                </div>
+        );
     }
 }

@@ -66,6 +66,11 @@ export class TestResult extends Component {
                     <div style={{flex: "1"}}>
                         {this.props.testResult.environment}
                     </div>
+                    {(this.props.compare_to !== undefined) && (this.props.compare_to !== this.props.testResult.trace_id) ? 
+                        (<div style={{flex: "1"}}>
+                            <Link to={"/tests/" + this.props.testResult.test_id + "/comparetrace/" + this.props.compare_to + "/" + this.props.testResult.trace_id}>Compare to latest</Link>
+                        </div>)
+                        : null}
                 </div>
             </div>
         );

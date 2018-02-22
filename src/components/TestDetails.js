@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Trace from '../containers/Trace';
+import Trace, { TraceComparator } from '../containers/Trace';
 import { Route, Switch, Redirect, NavLink, Link } from 'react-router-dom';
 import { Loading } from './Loading';
 import { TestResult } from '../containers/TestResults';
@@ -55,6 +55,8 @@ export class TestDetails extends Component {
                     <Route path="/tests/:test_id/children" render={() => {
                         return (<Children key={this.props.test.test.test_id} children={this.props.test.test.children} />)
                     }} />
+                    <Route path="/tests/:test_id/comparetrace/:trace_id1/:trace_id2" render={({match}) => {
+                        return (<TraceComparator base={match.params.trace_id1} with={match.params.trace_id2} />)}} />
                     <Route render={() => <Redirect to={
                         executions_enabled ?
                             "/tests/" + this.props.test.test.test_id + "/trace/" + this.props.test.test.last_traces[0]
@@ -93,7 +95,7 @@ class Previous extends Component {
         return (
             <div>
                 {this.props.previous.map(trace_id => (
-                    <TestResult key={trace_id} trace_id={trace_id} />
+                    <TestResult key={trace_id} trace_id={trace_id} compare_to={this.props.previous[0]}/>
                 ))}
             </div>
         );

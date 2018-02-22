@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { Trace as component } from '../components/Trace';
+import { Trace as component, TraceComparator as componentTraceComparator } from '../components/Trace';
 import { fetchTestResultForTrace, fetchTrace } from '../actions/testDetails';
 
 const mapStateToProps = (state, props) => {
@@ -22,3 +22,22 @@ const Trace = connect(
 )(component)
 
 export default Trace
+
+const mapStateToPropsTraceComparator = (state, props) => {
+    return {
+        spansBase: state.testDetails.traces.find(tr => tr.trace_id === props.base),
+        testResultBase: state.testDetails.testResults.find(tr => tr.trace_id === props.base),
+        spansWith: state.testDetails.traces.find(tr => tr.trace_id === props.with),
+        testResultWith: state.testDetails.testResults.find(tr => tr.trace_id === props.with),
+    }
+}
+const mapDispatchToPropsTraceComparator = dispatch => {
+    return {
+        fetchTrace: (trace_id) => dispatch(fetchTrace(trace_id)),
+        fetchTestResultForTrace: (trace_id) => dispatch(fetchTestResultForTrace(trace_id))
+    }
+}
+export const TraceComparator = connect(
+    mapStateToPropsTraceComparator,
+    mapDispatchToPropsTraceComparator
+)(componentTraceComparator)
