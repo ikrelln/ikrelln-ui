@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Route, Switch, NavLink, matchPath } from 'react-router-dom';
+import { Route, Switch, NavLink, matchPath, Redirect } from 'react-router-dom';
 import TestResults from './containers/TestResults';
 import TestDetails from './containers/TestDetails';
 import TraceRedirect from './containers/TraceRedirect';
@@ -14,10 +14,10 @@ class App extends Component {
         </header>
         <ul className="nav justify-content-end">
           <li className="nav-item">
-            <NavLink className="nav-link" to="/results">Results</NavLink>
+            <NavLink className="nav-link" to="/ikrelln/results">Results</NavLink>
           </li>
           <li className="nav-item">
-            <NavLink className="nav-link" to="/tests/root" isActive={(match, location) => {
+            <NavLink className="nav-link" to="/ikrelln/tests/root" isActive={(match, location) => {
               let match_dynamic = matchPath(location.pathname, {
                 path: '/tests/:test_id',
                 exact: false,
@@ -27,24 +27,24 @@ class App extends Component {
             }}>Tests</NavLink>
           </li>
           <li className="nav-item">
-            <NavLink className="nav-link" to="/reports">Reports</NavLink>
+            <NavLink className="nav-link" to="/ikrelln/reports">Reports</NavLink>
           </li>
           <li className="nav-item">
-            <NavLink className="nav-link" to="/setup">Set Up</NavLink>
+            <NavLink className="nav-link" to="/ikrelln/setup">Set Up</NavLink>
           </li>
         </ul>
         <div className="App-body">
           <Switch>
-            <Route path="/trace/:trace_id" render={({match}) => {
+            <Route path="/ikrelln/trace/:trace_id" render={({match}) => {
                 return (<TraceRedirect trace_id={match.params.trace_id} />)
               }} />
-            <Route path="/tests/:test_id" render={({match}) => {
+            <Route path="/ikrelln/tests/:test_id" render={({match}) => {
               return (<TestDetails key={match.params.test_id} test_id={match.params.test_id} match={match} />)
             }} />
-            <Route path="/results" component={TestResults} />
-            <Route path="/reports" render={() => <h1>Reports</h1>} />
-            <Route path="/setup" render={() => <h1>Setup</h1>} />
-            <Route component={TestResults} />
+            <Route path="/ikrelln/results" component={TestResults} />
+            <Route path="/ikrelln/reports" render={() => <h1>Reports</h1>} />
+            <Route path="/ikrelln/setup" render={() => <h1>Setup</h1>} />
+            <Route render={() => <Redirect to="/ikrelln/results" />} />
           </Switch>
         </div>
       </div>

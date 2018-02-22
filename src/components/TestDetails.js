@@ -24,11 +24,11 @@ export class TestDetails extends Component {
                 <nav aria-label="breadcrumb">
                     <ol className="breadcrumb">
                         <li className="breadcrumb-item">
-                            <Link to={"/tests/root"}>root</Link>
+                            <Link to={"/ikrelln/tests/root"}>root</Link>
                         </li>
                         {this.props.test.test.path.map(item => (
                             <li className="breadcrumb-item" key={item.id}>
-                                <Link to={"/tests/" + item.id}>{item.name}</Link>
+                                <Link to={"/ikrelln/tests/" + item.id}>{item.name}</Link>
                             </li>
                         ))}
                         <li className="breadcrumb-item active">{this.props.test.test.name}</li>
@@ -36,17 +36,20 @@ export class TestDetails extends Component {
                 </nav>
                 <ul className="nav nav-tabs" style={{margin: "5px"}}>
                     <li className="nav-item">
-                        <NavLink className={"nav-link" + (executions_enabled ? "" : " disabled")} to={"/tests/" + this.props.test.test.test_id + "/trace/latest"}>Latest Trace</NavLink>
+                        <NavLink className={"nav-link" + (executions_enabled ? "" : " disabled")} to={"/ikrelln/tests/" + this.props.test.test.test_id + "/trace/latest"}>Latest Trace</NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className={"nav-link" + (executions_enabled ? "" : " disabled")} to={"/tests/" + this.props.test.test.test_id + "/previous"}>Previous Executions</NavLink>
+                        <NavLink className={"nav-link" + (executions_enabled ? "" : " disabled")} to={"/ikrelln/tests/" + this.props.test.test.test_id + "/previous"}>Previous Executions</NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className={"nav-link" + (children_enabled ? "" : " disabled")} to={"/tests/" + this.props.test.test.test_id + "/children"}>Sub Tests</NavLink>
+                        <NavLink className={"nav-link" + (children_enabled ? "" : " disabled")} to={"/ikrelln/tests/" + this.props.test.test.test_id + "/children"}>Sub Tests</NavLink>
                     </li>
                 </ul>
                 <Switch>
-                    <Route path="/tests/:test_id/trace/:trace_id" render={({match}) => {
+                    <Route path="/ikrelln/tests/:test_id/trace/:trace_id/concurrent" render={({match}) => {
+                            return (<div>oh hay</div>);
+                    }} />
+                    <Route path="/ikrelln/tests/:test_id/trace/:trace_id" render={({match}) => {
                         let trace_id;
                         if (match.params.trace_id === "latest") {
                             trace_id = this.props.test.test.last_traces[0];
@@ -55,18 +58,18 @@ export class TestDetails extends Component {
                         }
                         return (<Trace key={trace_id} trace_id={trace_id} />)
                     }} />
-                    <Route path="/tests/:test_id/previous" render={() => {
+                    <Route path="/ikrelln/tests/:test_id/previous" render={() => {
                         return (<Previous key={this.props.test.test.test_id} test_id={this.props.test.test.test_id} previous={this.props.test.test.last_traces} />)
                     }} />
-                    <Route path="/tests/:test_id/children" render={() => {
+                    <Route path="/ikrelln/tests/:test_id/children" render={() => {
                         return (<Children key={this.props.test.test.test_id} children={this.props.test.test.children} />)
                     }} />
-                    <Route path="/tests/:test_id/comparetrace/:trace_id1/:trace_id2" render={({match}) => {
+                    <Route path="/ikrelln/tests/:test_id/comparetrace/:trace_id1/:trace_id2" render={({match}) => {
                         return (<TraceComparator base={match.params.trace_id1} with={match.params.trace_id2} />)}} />
                     <Route render={() => <Redirect to={
                         executions_enabled ?
-                            "/tests/" + this.props.test.test.test_id + "/trace/" + this.props.test.test.last_traces[0]
-                            : "/tests/" + this.props.test.test.test_id + "/children"
+                            "/ikrelln/tests/" + this.props.test.test.test_id + "/trace/" + this.props.test.test.last_traces[0]
+                            : "/ikrelln/tests/" + this.props.test.test.test_id + "/children"
                     }/>} />
                 </Switch>
             </div>
@@ -90,7 +93,7 @@ class TestChild extends Component {
     render() {
         return (
             <div>
-                <Link to={"/tests/" + this.props.test.id}>{this.props.test.name}</Link>
+                <Link to={"/ikrelln/tests/" + this.props.test.id}>{this.props.test.name}</Link>
             </div>
         );
     }

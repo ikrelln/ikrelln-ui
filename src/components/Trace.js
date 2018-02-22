@@ -3,8 +3,6 @@ import { Loading } from './Loading';
 import { formatDuration, statusToColorSuffix } from '../helper';
 import dateFormat from 'dateformat';
 
-import { Trace as TraceContainer } from '../containers/Trace'
-
 export class Trace extends Component {
     componentDidMount() {
         if (this.props.spans === undefined) {
