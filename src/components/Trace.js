@@ -15,7 +15,7 @@ export class Trace extends Component {
         let status_class = "alert" + statusToColorSuffix(this.props.testResult.status);
 
         return (
-            <div style={{margin: "20px"}}>
+            <div>
                 <div className={"alert  " + status_class} style={{fontSize: "1.5rem", fontWeight: "bold"}}>{this.props.testResult.status}</div>
                 <div style={{display: "flex"}}>
                     <div style={{flex: "2"}}>

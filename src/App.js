@@ -33,7 +33,7 @@ class App extends Component {
             <NavLink className="nav-link" to="/setup">Set Up</NavLink>
           </li>
         </ul>
-        <div>
+        <div className="App-body">
           <Switch>
             <Route path="/trace/:trace_id" render={({match}) => {
                 return (<TraceRedirect trace_id={match.params.trace_id} />)

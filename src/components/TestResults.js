@@ -14,7 +14,7 @@ class TestResultsList extends Component {
             return (<Loading />);
         }
         return (
-            <div style={{margin: "20px"}}>
+            <div>
                 {this.props.testDetails.testResults.map(testResult => (
                     <TestResult key={testResult.trace_id} testResult={testResult} />
                 ))}
