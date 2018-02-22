@@ -68,7 +68,7 @@ export class TestDetails extends Component {
                     }} />
                     <Route render={() => <Redirect to={
                         this.props.test.test.last_traces.length > 0 ?
-                            "/ikrelln/tests/" + this.props.test.test.test_id + "/trace/" + this.props.test.test.last_traces[0]
+                            "/ikrelln/tests/" + this.props.test.test.test_id + "/traces/" + this.props.test.test.last_traces[0]
                             : "/ikrelln/tests/" + this.props.test.test.test_id + "/children"
                     }/>} />
                 </Switch>

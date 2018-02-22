@@ -13,7 +13,7 @@ export class TraceRedirect extends Component {
         }
 
         return (
-            <Redirect to={"/ikrelln/tests/" + this.props.testResult.test_id + "/trace/" + this.props.testResult.trace_id}/>
+            <Redirect to={"/ikrelln/tests/" + this.props.testResult.test_id + "/traces/" + this.props.testResult.trace_id}/>
         );
 
     }
