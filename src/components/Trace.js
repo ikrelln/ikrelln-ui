@@ -4,6 +4,15 @@ import { formatDuration, statusToColorSuffix } from '../helper';
 import dateFormat from 'dateformat';
 
 export class Trace extends Component {
+    componentDidMount() {
+        if (this.props.spans === undefined) {
+            this.props.fetchTrace(this.props.trace_id);
+        }
+        if (this.props.testResult === undefined) {
+            this.props.fetchTestResultForTrace(this.props.trace_id);
+        }
+    }
+
     render() {
         if (this.props.spans === undefined) {
             return (<Loading />);

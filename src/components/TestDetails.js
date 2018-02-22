@@ -14,8 +14,6 @@ export class TestDetails extends Component {
             return (<Loading />);
         }
 
-        this.props.test.test.last_traces.map(trace_id => this.props.fetchTestResult(trace_id));
-
         let executions_enabled = this.props.test.test.last_traces.length > 0;
         let children_enabled = this.props.test.test.children.length > 0;
 
@@ -47,15 +45,13 @@ export class TestDetails extends Component {
                 </ul>
                 <Switch>
                     <Route path="/tests/:test_id/trace/:trace_id" render={({match}) => {
-                        this.props.fetchTrace(match.params.trace_id);
-                        this.props.fetchTestResult(match.params.trace_id);
-                        return (<Trace trace_id={match.params.trace_id} />)
+                        return (<Trace key={match.params.trace_id} trace_id={match.params.trace_id} />)
                     }} />
                     <Route path="/tests/:test_id/previous" render={() => {
-                        return (<Previous test_id={this.props.test.test.test_id} previous={this.props.test.test.last_traces} />)
+                        return (<Previous key={this.props.test.test.test_id} test_id={this.props.test.test.test_id} previous={this.props.test.test.last_traces} />)
                     }} />
                     <Route path="/tests/:test_id/children" render={() => {
-                        return (<Children children={this.props.test.test.children} />)
+                        return (<Children key={this.props.test.test.test_id} children={this.props.test.test.children} />)
                     }} />
                     <Route render={() => <Redirect to={
                         executions_enabled ?

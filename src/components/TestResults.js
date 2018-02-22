@@ -16,7 +16,7 @@ class TestResultsList extends Component {
         return (
             <div>
                 {this.props.testDetails.testResults.map(testResult => (
-                    <TestResult key={testResult.trace_id} testResult={testResult} />
+                    <TestResult key={testResult.trace_id} testResult={testResult} trace_id={testResult.trace_id}/>
                 ))}
             </div>
         );
@@ -27,9 +27,15 @@ export default TestResultsList;
 
 
 export class TestResult extends Component {
+    componentDidMount() {
+        if (this.props.testResult === undefined) {
+            this.props.fetchTestResultForTrace(this.props.trace_id);
+        }
+    }
+
     render() {
         if (this.props.testResult === undefined) {
-            return null;
+            return (<Loading />);
         }
 
         let status_class = "alert" + statusToColorSuffix(this.props.testResult.status);

@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import { Trace as component } from '../components/Trace';
+import { fetchTestResultForTrace, fetchTrace } from '../actions/testDetails';
 
 const mapStateToProps = (state, props) => {
     return {
@@ -9,7 +10,10 @@ const mapStateToProps = (state, props) => {
 }
 
 const mapDispatchToProps = dispatch => {
-    return {}
+    return {
+        fetchTrace: (trace_id) => dispatch(fetchTrace(trace_id)),
+        fetchTestResultForTrace: (trace_id) => dispatch(fetchTestResultForTrace(trace_id))
+    }
 }
 
 const Trace = connect(
