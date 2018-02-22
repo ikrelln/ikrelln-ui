@@ -36,7 +36,7 @@ export class TestDetails extends Component {
                 </nav>
                 <ul className="nav nav-tabs" style={{margin: "5px"}}>
                     <li className="nav-item">
-                        <NavLink className={"nav-link" + (executions_enabled ? "" : " disabled")} to={"/tests/" + this.props.test.test.test_id + "/trace/" + this.props.test.test.last_traces[0]}>Latest Trace</NavLink>
+                        <NavLink className={"nav-link" + (executions_enabled ? "" : " disabled")} to={"/tests/" + this.props.test.test.test_id + "/trace/latest"}>Latest Trace</NavLink>
                     </li>
                     <li className="nav-item">
                         <NavLink className={"nav-link" + (executions_enabled ? "" : " disabled")} to={"/tests/" + this.props.test.test.test_id + "/previous"}>Previous Executions</NavLink>
@@ -47,7 +47,13 @@ export class TestDetails extends Component {
                 </ul>
                 <Switch>
                     <Route path="/tests/:test_id/trace/:trace_id" render={({match}) => {
-                        return (<Trace key={match.params.trace_id} trace_id={match.params.trace_id} />)
+                        let trace_id;
+                        if (match.params.trace_id === "latest") {
+                            trace_id = this.props.test.test.last_traces[0];
+                        } else {
+                            trace_id = match.params.trace_id;
+                        }
+                        return (<Trace key={trace_id} trace_id={trace_id} />)
                     }} />
                     <Route path="/tests/:test_id/previous" render={() => {
                         return (<Previous key={this.props.test.test.test_id} test_id={this.props.test.test.test_id} previous={this.props.test.test.last_traces} />)
