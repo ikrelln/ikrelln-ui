@@ -70,11 +70,11 @@ class Span extends Component {
         let left = (this.props.span.timestamp - this.props.traceStartTs) / this.props.traceDuration * 100;
         let width = Math.max(this.props.span.duration / this.props.traceDuration * 100, 0.2);
         let selected_span = this.state.modal ? {border: "1px solid blue"} : {};
+        let error_span = this.props.span.tags["error"] ? {backgroundColor: "rgba(211, 18, 18, 0.3)"} : {backgroundColor: "rgba(30, 129, 196, 0.3)"};
         return (
-            <div className="test-neutral" style={{left: left.toFixed(1) + "%", width: width.toFixed(1) + "%",
             <div style={{left: left.toFixed(1) + "%", width: width.toFixed(1) + "%",
                          position: "relative", whiteSpace: "nowrap", margin: "1px", padding: "2px",
-                         display: "flex", alignItems: "center", ...selected_span}} onClick={this.toggle}>
+                         display: "flex", alignItems: "center", ...selected_span, ...error_span}} onClick={this.toggle}>
                 {this.props.span.remoteEndpoint !== null ? 
                     <span className="badge badge-pill badge-info" style={{fontWeight: "inherit" }}>{this.props.span.remoteEndpoint.serviceName}</span>
                     : null
