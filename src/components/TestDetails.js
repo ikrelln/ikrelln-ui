@@ -3,6 +3,8 @@ import Trace, { TraceComparator } from '../containers/Trace';
 import { Route, Switch, Redirect, NavLink, Link } from 'react-router-dom';
 import { Loading } from './Loading';
 import TestResults from '../containers/TestResults';
+import { statusToColorSuffix } from '../helper';
+import dateFormat from 'dateformat';
 
 export class TestDetails extends Component {
     componentDidMount() {
@@ -31,6 +33,7 @@ export class TestDetails extends Component {
                         <li className="breadcrumb-item active">{this.props.test.test.name}</li>
                     </ol>
                 </nav>
+                <ShortHistory results={this.props.test.test.last_results} />
                 <ul className="nav nav-tabs" style={{margin: "5px"}}>
                     <li className="nav-item">
                         <NavLink className={"nav-link" + (this.props.test.test.last_results.length > 0 ? "" : " disabled")} to={"/ikrelln/tests/" + this.props.test.test.test_id + "/results/latest"}>Latest Trace</NavLink>
@@ -96,5 +99,28 @@ class TestChild extends Component {
                 <Link to={"/ikrelln/tests/" + this.props.test.id}>{this.props.test.name}</Link>
             </div>
         );
+    }
+}
+
+class ShortHistory extends Component {
+    render() {
+        return (
+            <div style={{display: "flex", justifyContent: "center"}}>
+                {this.props.results.map(tr => {
+                    let status_class = "btn" + statusToColorSuffix(tr.status);
+                    let label = dateFormat(new Date(tr.date / 1000), "isoDateTime");
+                    if ((tr.environment !== undefined) && (tr.environment !== null)) {
+                        label += " - " + tr.environment;
+                    }
+                    return (
+                        <div key={tr.trace_id} style={{padding: "0 .2rem"}}>
+                            <Link className={"btn btn-xs " + status_class} to={"/ikrelln/tests/" + tr.test_id + "/results/" + tr.trace_id}>
+                                {label}
+                            </Link>
+                        </div>
+                    )
+                })}
+            </div>
+        )
     }
 }
