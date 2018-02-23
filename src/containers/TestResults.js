@@ -27,7 +27,7 @@ export default TestResults
 
 const mapStateToPropsTestResult = (state, props) => {
     return {
-        testResult: state.testResults.results.find(tr => tr.trace_id === props.trace_id),
+        test_result: state.testResults.results.find(tr => tr.trace_id === props.trace_id),
     }
 }
 const mapDispatchToPropsTestResult = dispatch => {

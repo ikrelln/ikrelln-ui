@@ -17,8 +17,8 @@ class TestResultsList extends Component {
                     if (this.props.status_filter === "Any")
                         return true;
                     return (this.props.status_filter === tr.status);
-                }).map(testResult => (
-                    <TestResult key={testResult.trace_id} testResult={testResult} trace_id={testResult.trace_id}/>
+                }).map(test_result => (
+                    <TestResult key={test_result.trace_id} test_result={test_result} trace_id={test_result.trace_id}/>
                 ))}
             </div>
         );
@@ -30,47 +30,47 @@ export default TestResultsList;
 
 export class TestResult extends Component {
     componentDidMount() {
-        if (this.props.testResult === undefined) {
+        if (this.props.test_result === undefined) {
             this.props.fetchTestResultForTrace(this.props.trace_id);
         }
     }
 
     render() {
-        if (this.props.testResult === undefined) {
+        if (this.props.test_result === undefined) {
             return (<Loading />);
         }
 
-        let status_class = "alert" + statusToColorSuffix(this.props.testResult.status);
+        let status_class = "alert" + statusToColorSuffix(this.props.test_result.status);
 
         return (
             <div className={"alert " + status_class}>
                 <div style={{display: "flex", justifyContent: "space-around"}}>
                     <div style={{flex: "10"}}>
-                        <Link className="alert-link" to={"/ikrelln/tests/" + this.props.testResult.test_id + "/traces/" + this.props.testResult.trace_id}>
+                        <Link className="alert-link" to={"/ikrelln/tests/" + this.props.test_result.test_id + "/results/" + this.props.test_result.trace_id}>
                             <nav aria-label="breadcrumb">
                                 <ol className="breadcrumb" style={{padding: "0rem", margin: "0rem", backgroundColor: "inherit"}}>
-                                    {this.props.testResult.path.map(item => (
+                                    {this.props.test_result.path.map(item => (
                                         <li className="breadcrumb-item" key={item}>{item}</li>
                                     ))}
                                     <li className="breadcrumb-item">
-                                        {this.props.testResult.name}
+                                        {this.props.test_result.name}
                                     </li>
                                 </ol>
                             </nav>
                         </Link>
                     </div>
                     <div style={{flex: "2"}}>
-                        {dateFormat(new Date(this.props.testResult.date / 1000), "isoDateTime")}
+                        {dateFormat(new Date(this.props.test_result.date / 1000), "isoDateTime")}
                     </div>
                     <div style={{flex: "1"}}>
-                        {formatDuration(this.props.testResult.duration)}
+                        {formatDuration(this.props.test_result.duration)}
                     </div>
                     <div style={{flex: "1"}}>
-                        {this.props.testResult.environment}
+                        {this.props.test_result.environment}
                     </div>
-                    {(this.props.compare_to !== undefined) && (this.props.compare_to !== this.props.testResult.trace_id) ? 
+                    {(this.props.compare_to !== undefined) && (this.props.compare_to !== this.props.test_result.trace_id) ? 
                         (<div style={{flex: "1"}}>
-                            <Link to={"/ikrelln/tests/" + this.props.testResult.test_id + "/traces/" + this.props.compare_to + "/compare/" + this.props.testResult.trace_id}>Compare to latest</Link>
+                            <Link to={"/ikrelln/tests/" + this.props.test_result.test_id + "/results/" + this.props.compare_to + "/compare/" + this.props.test_result.trace_id}>Compare to latest</Link>
                         </div>)
                         : null}
                 </div>
