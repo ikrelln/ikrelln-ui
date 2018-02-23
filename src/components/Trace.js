@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Loading } from './Loading';
 import { formatDuration, statusToColorSuffix } from '../helper';
 import dateFormat from 'dateformat';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 export class Trace extends Component {
     componentDidMount() {
@@ -50,19 +51,52 @@ export class Trace extends Component {
 }
 
 class Span extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            modal: false
+        };
+    
+        this.toggle = this.toggle.bind(this);
+    }
+    
+    toggle() {
+        this.setState({
+            modal: !this.state.modal
+        });
+    }
+
     render() {
         let left = (this.props.span.timestamp - this.props.traceStartTs) / this.props.traceDuration * 100;
         let width = Math.max(this.props.span.duration / this.props.traceDuration * 100, 0.2);
+        let selected_span = this.state.modal ? {border: "1px solid blue"} : {};
         return (
             <div className="test-neutral" style={{left: left.toFixed(1) + "%", width: width.toFixed(1) + "%",
-                         position: "relative", whiteSpace: "nowrap", margin: "1px", display: "flex", alignItems: "center",
-                         padding: "2px"}}>
+            <div style={{left: left.toFixed(1) + "%", width: width.toFixed(1) + "%",
+                         position: "relative", whiteSpace: "nowrap", margin: "1px", padding: "2px",
+                         display: "flex", alignItems: "center", ...selected_span}} onClick={this.toggle}>
                 {this.props.span.remoteEndpoint !== null ? 
                     <span className="badge badge-pill badge-info" style={{fontWeight: "inherit" }}>{this.props.span.remoteEndpoint.serviceName}</span>
                     : null
                 }
                 <div style={{padding: "0px 2px"}}>{this.props.span.name}</div>
                 <div style={{fontStyle: "italic", fontSize: "0.7rem"}}>{formatDuration(this.props.span.duration)}</div>
+                <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+                <ModalHeader>
+                    <div style={{display: "flex", justifyContent: "space-between"}}>
+                        <div>{this.props.span.name}</div>
+                        <div style={{fontStyle: "italic"}}>Tags</div>
+                    </div>
+                </ModalHeader>
+                <ModalBody>
+                    {Object.keys(this.props.span.tags).map((key, index) => 
+                        <div key={key} style={{display: "flex", justifyContent: "space-between"}}>
+                            <div>{key}</div>
+                            <div>{this.props.span.tags[key]}</div>
+                        </div>
+                    )}
+                </ModalBody>
+                </Modal>
             </div>
         );
 
