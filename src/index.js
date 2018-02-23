@@ -1,5 +1,3 @@
-import './bootstrap.min.css'
-
 import 'babel-polyfill'
 
 import thunkMiddleware from 'redux-thunk'
