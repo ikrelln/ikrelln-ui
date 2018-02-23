@@ -6,7 +6,7 @@ import { formatDuration, statusToColorSuffix } from '../helper';
 
 class TestResultsList extends Component {
     componentDidMount() {
-        this.props.fetchTestResults();
+        this.props.fetchTestResults(this.props.status_filter, this.props.test_id_filter);
     }
 
     render() {
@@ -17,8 +17,12 @@ class TestResultsList extends Component {
                     if (this.props.status_filter === "Any")
                         return true;
                     return (this.props.status_filter === tr.status);
+                }).filter(tr => {
+                    if (this.props.test_id_filter === undefined)
+                        return true;
+                    return (tr.test_id === this.props.test_id_filter);
                 }).map(test_result => (
-                    <TestResult key={test_result.trace_id} test_result={test_result} trace_id={test_result.trace_id}/>
+                    <TestResult key={test_result.trace_id} test_result={test_result} trace_id={test_result.trace_id} compare_to={this.props.compare_to} />
                 ))}
             </div>
         );
@@ -68,9 +72,9 @@ export class TestResult extends Component {
                     <div style={{flex: "1"}}>
                         {this.props.test_result.environment}
                     </div>
-                    {(this.props.compare_to !== undefined) && (this.props.compare_to !== this.props.test_result.trace_id) ? 
+                    {(this.props.compare_to !== undefined) && (this.props.compare_to.trace_id !== this.props.test_result.trace_id) ? 
                         (<div style={{flex: "1"}}>
-                            <Link to={"/ikrelln/tests/" + this.props.test_result.test_id + "/results/" + this.props.compare_to + "/compare/" + this.props.test_result.trace_id}>Compare to latest</Link>
+                            <Link to={"/ikrelln/tests/" + this.props.test_result.test_id + "/results/" + this.props.compare_to.trace_id + "/compare/" + this.props.test_result.trace_id}>Compare to {this.props.compare_to.name}</Link>
                         </div>)
                         : null}
                 </div>

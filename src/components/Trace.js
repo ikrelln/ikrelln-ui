@@ -5,7 +5,6 @@ import dateFormat from 'dateformat';
 
 export class Trace extends Component {
     componentDidMount() {
-        console.log(this.props);
         if (this.props.spans === undefined) {
             this.props.fetchTrace(this.props.trace_id);
         }
@@ -99,7 +98,6 @@ export class TraceComparator extends Component {
         if (this.props.testResultWith === undefined) {
             return (<Loading />);
         }
-        console.log(this.props);
 
         return (
             <div style={{display: "flex"}}>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Trace, { TraceComparator } from '../containers/Trace';
 import { Route, Switch, Redirect, NavLink, Link } from 'react-router-dom';
 import { Loading } from './Loading';
-import { TestResult } from '../containers/TestResults';
+import TestResults from '../containers/TestResults';
 
 export class TestDetails extends Component {
     componentDidMount() {
@@ -61,7 +61,7 @@ export class TestDetails extends Component {
                         return (<Trace key={trace_id} trace_id={trace_id} />)
                     }} />
                     <Route path="/ikrelln/tests/:test_id/results" render={() => {
-                        return (<Previous key={this.props.test.test.test_id} test_id={this.props.test.test.test_id} previous={this.props.test.test.last_results} />)
+                        return <TestResults key={this.props.test.test.test_id} test_id_filter={this.props.test.test.test_id} compare_to={{trace_id: this.props.test.test.last_results[0].trace_id, name: "latest"}}/>;
                     }} />
                     <Route path="/ikrelln/tests/:test_id/children" render={() => {
                         return (<Children key={this.props.test.test.test_id} children={this.props.test.test.children} />)
@@ -97,17 +97,4 @@ class TestChild extends Component {
             </div>
         );
     }
-}
-
-class Previous extends Component {
-    render() {
-        console.log(this.props.previous);
-        return (
-            <div>
-                {this.props.previous.map(test_result => (
-                    <TestResult key={test_result.trace_id} trace_id={test_result.trace_id} test_result={test_result} compare_to={this.props.previous[0].trace_id}/>
-                ))}
-            </div>
-        );
-    }    
 }

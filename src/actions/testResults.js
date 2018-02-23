@@ -12,12 +12,15 @@ function receiveTestResults(json) {
         receivedAt: Date.now()
     }
 }
-export function fetchTestResults(status) {
+export function fetchTestResults(status, test_id) {
     if (status === undefined)
         status = "Any";
+    let test_id_filter = "";
+    if (test_id !== undefined)
+        test_id_filter = "&testId=" + test_id;
     return dispatch => {
         dispatch(requestTestResults())
-        return fetch('/api/v1/testresults?status=' + status)
+        return fetch('/api/v1/testresults?status=' + status + test_id_filter)
             .then(response => response.json())
             .then(json => dispatch(receiveTestResults(json)))
     }
