@@ -38,9 +38,6 @@ export function fetchAndFilterTestResults(status) {
         status = "Any";
     return dispatch => {
         dispatch(filterTestResults(status))
-        dispatch(requestTestResults())
-        return fetch('/api/v1/testresults?status=' + status)
-            .then(response => response.json())
-            .then(json => dispatch(receiveTestResults(json)))
+        return fetchTestResults(status)(dispatch);
     }
 }
