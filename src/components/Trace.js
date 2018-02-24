@@ -39,7 +39,7 @@ export class Trace extends Component {
                         </Link>
                     </div>
                 </div>
-                <div style={{display: "flex"}}>
+                <div style={{display: "flex", marginBottom: "1rem"}}>
                     <div style={{flex: "2", display: "flex", justifyContent: "center"}}>
                         <div style={{paddingRight: "1rem"}}>
                             <i className="fas fa-calendar-alt" style={{color: "gray"}}></i>
@@ -67,6 +67,20 @@ export class Trace extends Component {
                 </div>
 
                 <div style={{display: "flex", flexDirection: "column", textAlign: "left"}}>
+                    <div style={{display: "flex", justifyContent: "space-evenly"}}>
+                        <div style={{fontWeight: "lighter", fontSize: "smaller", fontStyle: "italic"}}>
+                            {formatDuration(this.props.spans.spans[0].duration / 5)}
+                        </div>
+                        <div style={{fontWeight: "lighter", fontSize: "smaller", fontStyle: "italic"}}>
+                            {formatDuration(this.props.spans.spans[0].duration / 5 * 2)}
+                        </div>
+                        <div style={{fontWeight: "lighter", fontSize: "smaller", fontStyle: "italic"}}>
+                            {formatDuration(this.props.spans.spans[0].duration / 5 * 3)}
+                        </div>
+                        <div style={{fontWeight: "lighter", fontSize: "smaller", fontStyle: "italic"}}>
+                            {formatDuration(this.props.spans.spans[0].duration / 5 * 4)}
+                        </div>
+                    </div>
                     {this.props.spans.spans.map(span => (
                         <Span key={span.id} span={span} traceStartTs={this.props.spans.spans[0].timestamp}
                             traceDuration={this.props.spans.spans[0].duration} />
@@ -99,31 +113,39 @@ class Span extends Component {
         let selected_span = this.state.modal ? {border: "1px solid blue"} : {};
         let error_span = this.props.span.tags["error"] ? {backgroundColor: "rgba(211, 18, 18, 0.3)"} : {backgroundColor: "rgba(30, 129, 196, 0.3)"};
         return (
-            <div style={{left: left.toFixed(1) + "%", width: width.toFixed(1) + "%",
-                         position: "relative", whiteSpace: "nowrap", margin: "1px", padding: "2px",
-                         display: "flex", alignItems: "center", ...selected_span, ...error_span}} onClick={this.toggle}>
-                {this.props.span.remoteEndpoint !== null ? 
-                    <span className="badge badge-pill badge-info" style={{fontWeight: "inherit" }}>{this.props.span.remoteEndpoint.serviceName}</span>
-                    : null
-                }
-                <div style={{padding: "0px 2px"}}>{this.props.span.name}</div>
-                <div style={{fontStyle: "italic", fontSize: "0.7rem"}}>{formatDuration(this.props.span.duration)}</div>
-                <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                <ModalHeader>
-                    <div style={{display: "flex", justifyContent: "space-between"}}>
-                        <div>{this.props.span.name}</div>
-                        <div style={{fontStyle: "italic"}}>Tags</div>
-                    </div>
-                </ModalHeader>
-                <ModalBody>
-                    {Object.keys(this.props.span.tags).map((key, index) => 
-                        <div key={key} style={{display: "flex", justifyContent: "space-between"}}>
-                            <div>{key}</div>
-                            <div>{this.props.span.tags[key]}</div>
+            <div>
+                <div style={{display: "flex", justifyContent: "space-evenly", position: "absolute", left: "20px", right: "20px"}}>
+                    <div>.</div>
+                    <div>.</div>
+                    <div>.</div>
+                    <div>.</div>
+                </div>
+                <div style={{left: left.toFixed(1) + "%", width: width.toFixed(1) + "%",
+                            position: "relative", whiteSpace: "nowrap", margin: "1px", padding: "2px",
+                            display: "flex", alignItems: "center", ...selected_span, ...error_span}} onClick={this.toggle}>
+                    {this.props.span.remoteEndpoint !== null ? 
+                        <span className="badge badge-pill badge-info" style={{fontWeight: "inherit" }}>{this.props.span.remoteEndpoint.serviceName}</span>
+                        : null
+                    }
+                    <div style={{padding: "0px 2px"}}>{this.props.span.name}</div>
+                    <div style={{fontStyle: "italic", fontSize: "0.7rem"}}>{formatDuration(this.props.span.duration)}</div>
+                    <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+                    <ModalHeader>
+                        <div style={{display: "flex", justifyContent: "space-between"}}>
+                            <div>{this.props.span.name}</div>
+                            <div style={{fontStyle: "italic"}}>Tags</div>
                         </div>
-                    )}
-                </ModalBody>
-                </Modal>
+                    </ModalHeader>
+                    <ModalBody>
+                        {Object.keys(this.props.span.tags).map((key, index) => 
+                            <div key={key} style={{display: "flex", justifyContent: "space-between"}}>
+                                <div>{key}</div>
+                                <div>{this.props.span.tags[key]}</div>
+                            </div>
+                        )}
+                    </ModalBody>
+                    </Modal>
+                </div>
             </div>
         );
 
