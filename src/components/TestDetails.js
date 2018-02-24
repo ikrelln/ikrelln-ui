@@ -42,9 +42,6 @@ export class TestDetails extends Component {
                         <NavLink className={"nav-link" + (this.props.test.test.last_results.length > 1 ? "" : " disabled")} exact to={"/ikrelln/tests/" + this.props.test.test.test_id + "/results"}>All Executions</NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className={"nav-link" + (this.props.test.test.last_results.length > 0 ? "" : " disabled")} to={"/ikrelln/tests/" + this.props.test.test.test_id + "/results/na/concurrent"}>At The Same Time</NavLink>
-                    </li>
-                    <li className="nav-item">
                         <NavLink className={"nav-link" + (this.props.test.test.children.length > 0 ? "" : " disabled")} to={"/ikrelln/tests/" + this.props.test.test.test_id + "/children"}>Sub Tests</NavLink>
                     </li>
                 </ul>
@@ -53,7 +50,11 @@ export class TestDetails extends Component {
                             return (<div>display all tests that were running at the same time, with option to filter by environment</div>);
                     }} />
                     <Route path="/ikrelln/tests/:test_id/results/:trace_id1/compare/:trace_id2" render={({match}) => {
-                        return (<TraceComparator base={match.params.trace_id1} with={match.params.trace_id2} />)}} />
+                        return (<TraceComparator base={match.params.trace_id1} with={match.params.trace_id2} />)
+                    }} />
+                    <Route path="/ikrelln/tests/:test_id/results/:trace_id1/compare" render={({match}) => {
+                        return <TestResults key={this.props.test.test.test_id} test_id_filter={this.props.test.test.test_id} compare_to={{trace_id: match.params.trace_id1, name: "selected"}}/>;
+                    }} />
                     <Route path="/ikrelln/tests/:test_id/results/:trace_id" render={({match}) => {
                         let trace_id;
                         if (match.params.trace_id === "latest") {

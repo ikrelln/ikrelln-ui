@@ -3,6 +3,7 @@ import { Loading } from './Loading';
 import { formatDuration, statusToColorSuffix } from '../helper';
 import dateFormat from 'dateformat';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 export class Trace extends Component {
     componentDidMount() {
@@ -26,7 +27,17 @@ export class Trace extends Component {
 
         return (
             <div>
-                <div className={"alert  " + status_class} style={{fontSize: "1.5rem", fontWeight: "bold"}}>{this.props.result.status}</div>
+                <div style={{display: "flex"}}>
+                    <div className={"alert  " + status_class} style={{fontSize: "1.5rem", fontWeight: "bold", flex: 1}}>{this.props.result.status}</div>
+                    <div style={{display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 0.6rem", marginLeft: "0.4rem"}} className="alert alert-secondary">
+                        <Link style={{alignSelf: "flex-end"}} to={"/ikrelln/tests/" + this.props.result.test_id + "/results/" + this.props.result.trace_id + "/compare"}>
+                            Compare to...
+                        </Link>
+                        <Link style={{alignSelf: "flex-end"}} to={"/ikrelln/tests/" + this.props.result.test_id + "/results/" + this.props.result.trace_id + "/concurrent"}>
+                            At The Same Time
+                        </Link>
+                    </div>
+                </div>
                 <div style={{display: "flex"}}>
                     <div style={{flex: "2"}}>
                         {dateFormat(new Date(this.props.result.date / 1000), "isoDateTime")}
