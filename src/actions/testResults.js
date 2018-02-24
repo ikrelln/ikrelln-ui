@@ -12,32 +12,66 @@ function receiveTestResults(json) {
         receivedAt: Date.now()
     }
 }
-export function fetchTestResults(status, test_id) {
+export const UPDATE_OLDEST_BY_FILTER = 'UPDATE_OLDEST_BY_FILTER'
+function updateOldestByFilter(filter, oldest) {
+    return {
+        type: UPDATE_OLDEST_BY_FILTER,
+        filter,
+        oldest,
+    }
+}
+export function fetchTestResults(status, environment, test_id) {
     if (status === undefined)
         status = "Any";
+    let environment_filter = "";
+    if (environment !== undefined)
+    environment_filter = "&environment=" + environment;
     let test_id_filter = "";
     if (test_id !== undefined)
         test_id_filter = "&testId=" + test_id;
     return dispatch => {
         dispatch(requestTestResults())
-        return fetch('/api/v1/testresults?status=' + status + test_id_filter)
+        return fetch('/api/v1/testresults?status=' + status + environment_filter + test_id_filter)
             .then(response => response.json())
             .then(json => dispatch(receiveTestResults(json)))
     }
 }
 
 export const FILTER_TEST_RESULTS = 'FILTER_TEST_RESULTS'
-function filterTestResults(status) {
+export function filterTestResults(status, environment) {
     return {
         type: FILTER_TEST_RESULTS,
-        status
+        filter: {status, environment},
     }    
 }
-export function fetchAndFilterTestResults(status) {
-    if (status === undefined)
+export function fetchAndFilterTestResults(status, environment, test_id) {
+    if ((status === undefined) || (status === null))
         status = "Any";
+    
     return dispatch => {
-        dispatch(filterTestResults(status))
-        return fetchTestResults(status)(dispatch);
+        dispatch(filterTestResults(status, environment))
+        return fetchTestResults(status, environment, test_id)(dispatch);
+    }
+}
+
+export const REQUEST_ENVIRONMENTS = 'REQUEST_ENVIRONMENTS'
+function requestEnvironments() {
+    return {
+        type: REQUEST_ENVIRONMENTS
+    }
+}
+export const RECEIVE_ENVIRONMENTS = 'RECEIVE_ENVIRONMENTS'
+function receiveEnvironments(json) {
+    return {
+        type: RECEIVE_ENVIRONMENTS,
+        environments: json,
+    }
+}
+export function fetchEnvironments() {
+    return dispatch => {
+        dispatch(requestEnvironments())
+        return fetch('/api/v1/environments')
+            .then(response => response.json())
+            .then(json => dispatch(receiveEnvironments(json)))
     }
 }

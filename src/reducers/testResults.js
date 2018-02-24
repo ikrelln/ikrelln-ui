@@ -1,5 +1,5 @@
 import { RECEIVE_TEST_RESULT_FOR_TRACE } from '../actions/testDetails';
-import { RECEIVE_TEST_RESULTS, FILTER_TEST_RESULTS } from '../actions/testResults';
+import { RECEIVE_TEST_RESULTS, RECEIVE_ENVIRONMENTS, FILTER_TEST_RESULTS } from '../actions/testResults';
 
 const sortByDate = (a, b) => {
     if (a['date'] < b['date'])
@@ -9,7 +9,7 @@ const sortByDate = (a, b) => {
     return -1;
 };
 
-const testResults = (state = { results: [], status_filter: "Any" }, action) => {
+const testResults = (state = { results: [], environments: [], filter: {status: "Any", environment: undefined} }, action) => {
     switch (action.type) {
         case RECEIVE_TEST_RESULTS:
             var new_test_results = state.results.slice();
@@ -32,8 +32,12 @@ const testResults = (state = { results: [], status_filter: "Any" }, action) => {
                 results: new_test_results,
             })
         case FILTER_TEST_RESULTS:
+        return Object.assign({}, state, {
+            filter: action.filter,
+        })
+    case RECEIVE_ENVIRONMENTS:
             return Object.assign({}, state, {
-                status_filter: action.status,
+                environments: action.environments,
             })
         default:
             return state
