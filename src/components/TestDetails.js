@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Trace, { TraceComparator } from '../containers/Trace';
-import { Route, Switch, Redirect, NavLink, Link } from 'react-router-dom';
+import { Route, Switch, Redirect, NavLink, Link, matchPath } from 'react-router-dom';
 import { Loading } from './Loading';
 import TestResults from '../containers/TestResults';
 import { statusToColorSuffix } from '../helper';
@@ -42,7 +42,17 @@ export class TestDetails extends Component {
                 <ul className="nav nav-tabs" style={{margin: "5px"}}>
                     <li className="nav-item">
                         <NavLink className={"nav-link" + (this.props.test.test.last_results.length > 0 ? "" : " disabled")} 
-                            to={"/ikrelln/tests/" + this.props.test.test.test_id + "/results/latest"}>
+                            to={"/ikrelln/tests/" + this.props.test.test.test_id + "/results/latest"}
+                            isActive={(match, location) => {
+                                let match_dynamic = matchPath(location.pathname, {
+                                  path: '/ikrelln/tests/:test_id/results/:trace_id',
+                                  exact: false,
+                                  strict: false
+                                });
+                                return (match_dynamic != null)
+                                    && ((match_dynamic.params.trace_id === "latest")
+                                        || (match_dynamic.params.trace_id === this.props.test.test.last_results[0].trace_id))
+                            }}>
                             Latest Trace
                         </NavLink>
                     </li>
@@ -94,7 +104,8 @@ export class TestDetails extends Component {
                         return (<TraceComparator base={match.params.trace_id1} with={match.params.trace_id2} />)
                     }} />
                     <Route path="/ikrelln/tests/:test_id/results/:trace_id1/compare" render={({match}) => {
-                        return <TestResults key={this.props.test.test.test_id} test_id_filter={this.props.test.test.test_id} compare_to={{trace_id: match.params.trace_id1, name: "selected"}}/>;
+                        return <TestResults key={this.props.test.test.test_id} test_id_filter={this.props.test.test.test_id}
+                                                compare_to={{trace_id: match.params.trace_id1, name: "selected"}}/>;
                     }} />
                     <Route path="/ikrelln/tests/:test_id/results/:trace_id" render={({match}) => {
                         let trace_id;
@@ -106,7 +117,8 @@ export class TestDetails extends Component {
                         return (<Trace key={trace_id} trace_id={trace_id} />)
                     }} />
                     <Route path="/ikrelln/tests/:test_id/results" render={() => {
-                        return <TestResults key={this.props.test.test.test_id} test_id_filter={this.props.test.test.test_id} compare_to={{trace_id: this.props.test.test.last_results[0].trace_id, name: "latest"}}/>;
+                        return <TestResults key={this.props.test.test.test_id} test_id_filter={this.props.test.test.test_id}
+                                                compare_to={{trace_id: this.props.test.test.last_results[0].trace_id, name: "latest"}}/>;
                     }} />
                     <Route path="/ikrelln/tests/:test_id/stats" render={() => {
                         return (<div>display stats about test: number of success/failures, min/average/max duration, ... (global/per environment)</div>);
