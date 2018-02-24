@@ -19,7 +19,7 @@ class App extends Component {
           <li className="nav-item">
             <NavLink className="nav-link" to="/ikrelln/tests/root" isActive={(match, location) => {
               let match_dynamic = matchPath(location.pathname, {
-                path: '/tests/:test_id',
+                path: '/ikrelln/tests/:test_id',
                 exact: false,
                 strict: false
               });

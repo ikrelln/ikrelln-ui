@@ -23,7 +23,12 @@ export class TestDetails extends Component {
                 <nav aria-label="breadcrumb">
                     <ol className="breadcrumb">
                         <li className="breadcrumb-item">
-                            <Link to={"/ikrelln/tests/root"}>root</Link>
+                            <div style={{display: "flex"}}>
+                                <div style={{paddingRight: "1rem"}}>
+                                    <i className="fas fa-map-marker-alt" style={{color: "gray"}}></i>
+                                </div>
+                                <Link to={"/ikrelln/tests/root"}>root</Link>
+                            </div>
                         </li>
                         {this.props.test.test.path.map(item => (
                             <li className="breadcrumb-item" key={item.id}>
@@ -36,13 +41,36 @@ export class TestDetails extends Component {
                 <ShortHistory results={this.props.test.test.last_results} />
                 <ul className="nav nav-tabs" style={{margin: "5px"}}>
                     <li className="nav-item">
-                        <NavLink className={"nav-link" + (this.props.test.test.last_results.length > 0 ? "" : " disabled")} to={"/ikrelln/tests/" + this.props.test.test.test_id + "/results/latest"}>Latest Trace</NavLink>
+                        <NavLink className={"nav-link" + (this.props.test.test.last_results.length > 0 ? "" : " disabled")} 
+                            to={"/ikrelln/tests/" + this.props.test.test.test_id + "/results/latest"}>
+                            Latest Trace
+                        </NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className={"nav-link" + (this.props.test.test.last_results.length > 1 ? "" : " disabled")} exact to={"/ikrelln/tests/" + this.props.test.test.test_id + "/results"}>All Executions</NavLink>
+                        <NavLink className={"nav-link" + (this.props.test.test.last_results.length > 1 ? "" : " disabled")} exact 
+                            to={"/ikrelln/tests/" + this.props.test.test.test_id + "/results"}>
+                            <div style={{display: "flex"}}>
+                                <div style={{paddingRight: "1rem"}}>
+                                    <i className="fas fa-reply-all" style={{color: "gray"}}></i>
+                                </div>
+                                <div>
+                                    Previous Executions
+                                </div>
+                            </div>
+                        </NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className={"nav-link" + (this.props.test.test.children.length > 0 ? "" : " disabled")} to={"/ikrelln/tests/" + this.props.test.test.test_id + "/children"}>Sub Tests</NavLink>
+                        <NavLink className={"nav-link" + (this.props.test.test.children.length > 0 ? "" : " disabled")} 
+                            to={"/ikrelln/tests/" + this.props.test.test.test_id + "/children"}>
+                            <div style={{display: "flex"}}>
+                                <div style={{paddingRight: "1rem"}}>
+                                    <i className="fas fa-sitemap" style={{color: "gray"}}></i>
+                                </div>
+                                <div>
+                                    Sub Tests
+                                </div>
+                            </div>
+                        </NavLink>
                     </li>
                 </ul>
                 <Switch>

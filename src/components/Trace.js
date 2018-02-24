@@ -30,6 +30,7 @@ export class Trace extends Component {
                 <div style={{display: "flex"}}>
                     <div className={"alert  " + status_class} style={{fontSize: "1.5rem", fontWeight: "bold", flex: 1}}>{this.props.result.status}</div>
                     <div style={{display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 0.6rem", marginLeft: "0.4rem"}} className="alert alert-secondary">
+                        <i className="fas fa-wrench" style={{position: "absolute", top: "5px", left: "5px", color: "grey"}}></i>
                         <Link style={{alignSelf: "flex-end"}} to={"/ikrelln/tests/" + this.props.result.test_id + "/results/" + this.props.result.trace_id + "/compare"}>
                             Compare to...
                         </Link>
@@ -39,14 +40,29 @@ export class Trace extends Component {
                     </div>
                 </div>
                 <div style={{display: "flex"}}>
-                    <div style={{flex: "2"}}>
-                        {dateFormat(new Date(this.props.result.date / 1000), "isoDateTime")}
+                    <div style={{flex: "2", display: "flex", justifyContent: "center"}}>
+                        <div style={{paddingRight: "1rem"}}>
+                            <i className="fas fa-calendar-alt" style={{color: "gray"}}></i>
+                        </div>
+                        <div>
+                            {dateFormat(new Date(this.props.result.date / 1000), "isoDateTime")}
+                        </div>
                     </div>
-                    <div style={{flex: "1"}}>
-                        {formatDuration(this.props.result.duration)}
+                    <div style={{flex: "1", display: "flex", justifyContent: "center"}}>
+                        <div style={{paddingRight: "1rem"}}>
+                            <i className="fas fa-stopwatch" style={{color: "gray"}}></i>
+                        </div>
+                        <div>
+                            {formatDuration(this.props.result.duration)}
+                        </div>
                     </div>
-                    <div style={{flex: "1"}}>
-                        {this.props.result.environment}
+                    <div style={{flex: "1", display: "flex", justifyContent: "center"}}>
+                        <div style={{paddingRight: "1rem"}}>
+                            <i className="fas fa-globe" style={{color: "gray"}}></i>
+                        </div>
+                        <div>
+                            {this.props.result.environment}
+                        </div>
                     </div>
                 </div>
 
