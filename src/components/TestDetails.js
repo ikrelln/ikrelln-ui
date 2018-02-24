@@ -60,6 +60,19 @@ export class TestDetails extends Component {
                         </NavLink>
                     </li>
                     <li className="nav-item">
+                        <NavLink className={"nav-link" + (this.props.test.test.last_results.length > 0 ? "" : " disabled")}
+                            to={"/ikrelln/tests/" + this.props.test.test.test_id + "/stats"}>
+                            <div style={{display: "flex"}}>
+                                <div style={{paddingRight: "1rem"}}>
+                                    <i className="fas fa-stethoscope" style={{color: "gray"}}></i>
+                                </div>
+                                <div>
+                                    Statistics
+                                </div>
+                            </div>
+                        </NavLink>
+                    </li>
+                    <li className="nav-item">
                         <NavLink className={"nav-link" + (this.props.test.test.children.length > 0 ? "" : " disabled")} 
                             to={"/ikrelln/tests/" + this.props.test.test.test_id + "/children"}>
                             <div style={{display: "flex"}}>
@@ -75,7 +88,7 @@ export class TestDetails extends Component {
                 </ul>
                 <Switch>
                     <Route path="/ikrelln/tests/:test_id/results/:trace_id/concurrent" render={({match}) => {
-                            return (<div>display all tests that were running at the same time, with option to filter by environment</div>);
+                        return (<div>display all tests that were running at the same time, with option to filter by environment</div>);
                     }} />
                     <Route path="/ikrelln/tests/:test_id/results/:trace_id1/compare/:trace_id2" render={({match}) => {
                         return (<TraceComparator base={match.params.trace_id1} with={match.params.trace_id2} />)
@@ -94,6 +107,9 @@ export class TestDetails extends Component {
                     }} />
                     <Route path="/ikrelln/tests/:test_id/results" render={() => {
                         return <TestResults key={this.props.test.test.test_id} test_id_filter={this.props.test.test.test_id} compare_to={{trace_id: this.props.test.test.last_results[0].trace_id, name: "latest"}}/>;
+                    }} />
+                    <Route path="/ikrelln/tests/:test_id/stats" render={() => {
+                        return (<div>display stats about test: number of success/failures, min/average/max duration, ... (global/per environment)</div>);
                     }} />
                     <Route path="/ikrelln/tests/:test_id/children" render={() => {
                         return (<Children key={this.props.test.test.test_id} children={this.props.test.test.children} />)
