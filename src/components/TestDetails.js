@@ -5,6 +5,7 @@ import { Loading } from './Loading';
 import TestResults from '../containers/TestResults';
 import { statusToColorSuffix } from '../helper';
 import dateFormat from 'dateformat';
+import TestTimeline from '../containers/TestTimeline';
 
 export class TestDetails extends Component {
     componentDidMount() {
@@ -98,7 +99,7 @@ export class TestDetails extends Component {
                 </ul>
                 <Switch>
                     <Route path="/ikrelln/tests/:test_id/results/:trace_id/concurrent" render={({match}) => {
-                        return (<div>display all tests that were running at the same time, with option to filter by environment</div>);
+                        return (<TestTimeline trace_id={match.params.trace_id} />);
                     }} />
                     <Route path="/ikrelln/tests/:test_id/results/:trace_id1/compare/:trace_id2" render={({match}) => {
                         return (<TraceComparator base={match.params.trace_id1} with={match.params.trace_id2} />)
