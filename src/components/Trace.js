@@ -107,8 +107,8 @@ class Span extends Component {
         let selected_span = this.state.modal ? {border: "1px solid blue"} : {};
         let error_span = this.props.span.tags["error"] ? {backgroundColor: "rgba(211, 18, 18, 0.3)"} : {backgroundColor: "rgba(30, 129, 196, 0.3)"};
         return (
-            <div>
-                <div style={{display: "flex", justifyContent: "space-evenly", position: "absolute", left: "20px", right: "20px"}}>
+            <div style={{position: "relative"}}>
+                <div style={{display: "flex", justifyContent: "space-evenly", position: "absolute", width: "100%", paddingTop: "5px"}}>
                     {[...Array(this.props.nb_time_separation)].map((x, i) =>
                         (<div key={i} style={{fontWeight: "lighter"}}>&middot;</div>)
                     )}
