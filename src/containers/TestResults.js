@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import TestResultsList from '../components/TestResults';
-import { fetchTestResults, fetchAndFilterTestResults, fetchEnvironments } from '../actions/testResults';
+import { fetchTestResults, fetchAndFilterTestResults, fetchEnvironments, clearFilterTestResults } from '../actions/testResults';
 
 const mapStateToProps = state => {
     return {
@@ -15,6 +15,7 @@ const mapDispatchToProps = dispatch => {
         fetchTestResults: (status, environment, test_id, ts) => dispatch(fetchTestResults(status, environment, test_id, ts)),
         fetchAndFilterTestResults: (status, environment, test_id, ts) => dispatch(fetchAndFilterTestResults(status, environment, test_id, ts)),
         fetchEnvironments: () => dispatch(fetchEnvironments()),
+        clearFilter: () => dispatch(clearFilterTestResults()),
     }
 }
 

@@ -51,6 +51,10 @@ export function filterTestResults(status, environment, ts) {
         filter: {status, environment, ts},
     }    
 }
+export const CLEAR_FILTER_TEST_RESULTS = 'CLEAR_FILTER_TEST_RESULTS'
+export function clearFilterTestResults() {
+    return {
+        type: CLEAR_FILTER_TEST_RESULTS,
     }    
 }
 export function fetchAndFilterTestResults(status, environment, test_id, ts) {

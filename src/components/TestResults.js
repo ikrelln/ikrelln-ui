@@ -13,13 +13,17 @@ class TestResultsList extends Component {
         }
     }
 
+    componentWillUnmount() {
+        this.props.clearFilter();
+    }
+
     render() {
         return (
             <div>
                 <TestResultFilter fetchAndFilterTestResults={this.props.fetchAndFilterTestResults} environments={this.props.environments}
                     filter={{test_id: this.props.test_id_filter, ...this.props.filter}} />
                 {this.props.test_results.filter(tr => {
-                    if (this.props.filter.status === "Any")
+                    if ((this.props.filter.status === undefined) || (this.props.filter.status === "Any"))
                         return true;
                     return (this.props.filter.status === tr.status);
                 }).filter(tr => {
