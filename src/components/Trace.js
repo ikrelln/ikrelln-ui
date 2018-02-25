@@ -24,6 +24,7 @@ export class Trace extends Component {
         }
 
         let status_class = "alert" + statusToColorSuffix(this.props.result.status);
+        const nb_time_separation = 4;
 
         return (
             <div>
@@ -68,22 +69,15 @@ export class Trace extends Component {
 
                 <div style={{display: "flex", flexDirection: "column", textAlign: "left"}}>
                     <div style={{display: "flex", justifyContent: "space-evenly"}}>
-                        <div style={{fontWeight: "lighter", fontSize: "smaller", fontStyle: "italic"}}>
-                            {formatDuration(this.props.spans.spans[0].duration / 5)}
-                        </div>
-                        <div style={{fontWeight: "lighter", fontSize: "smaller", fontStyle: "italic"}}>
-                            {formatDuration(this.props.spans.spans[0].duration / 5 * 2)}
-                        </div>
-                        <div style={{fontWeight: "lighter", fontSize: "smaller", fontStyle: "italic"}}>
-                            {formatDuration(this.props.spans.spans[0].duration / 5 * 3)}
-                        </div>
-                        <div style={{fontWeight: "lighter", fontSize: "smaller", fontStyle: "italic"}}>
-                            {formatDuration(this.props.spans.spans[0].duration / 5 * 4)}
-                        </div>
+                        {[...Array(nb_time_separation)].map((x, i) => (
+                            <div key={i} style={{fontWeight: "lighter", fontSize: "smaller", fontStyle: "italic", width: "9ch"}}>
+                                {formatDuration(this.props.spans.spans[0].duration / (nb_time_separation + 1) * (i + 1))}
+                            </div>
+                        ))}
                     </div>
                     {this.props.spans.spans.map(span => (
                         <Span key={span.id} span={span} traceStartTs={this.props.spans.spans[0].timestamp}
-                            traceDuration={this.props.spans.spans[0].duration} />
+                            traceDuration={this.props.spans.spans[0].duration} nb_time_separation={nb_time_separation}/>
                     ))}
                 </div>
             </div>
@@ -115,10 +109,9 @@ class Span extends Component {
         return (
             <div>
                 <div style={{display: "flex", justifyContent: "space-evenly", position: "absolute", left: "20px", right: "20px"}}>
-                    <div>.</div>
-                    <div>.</div>
-                    <div>.</div>
-                    <div>.</div>
+                    {[...Array(this.props.nb_time_separation)].map((x, i) =>
+                        (<div key={i} style={{fontWeight: "lighter"}}>&middot;</div>)
+                    )}
                 </div>
                 <div style={{left: left.toFixed(1) + "%", width: width.toFixed(1) + "%",
                             position: "relative", whiteSpace: "nowrap", margin: "1px", padding: "2px",
