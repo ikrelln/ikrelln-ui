@@ -6,6 +6,17 @@ import { formatDuration, statusToColorSuffix } from '../helper';
 import Datetime from 'react-datetime';
 
 class TestResultsList extends Component {
+    constructor(props) {
+        super(props);
+    
+        this.state = {name_filter: ""};
+        this.updateNameFilter = this.updateNameFilter.bind(this);
+    }
+
+    updateNameFilter(name) {
+        this.setState({name_filter: name});
+    }
+
     componentDidMount() {
         this.props.fetchTestResults(this.props.filter.status, this.props.filter.environment, this.props.test_id_filter);
         if (this.props.environments.length === 0) {
@@ -21,7 +32,8 @@ class TestResultsList extends Component {
         return (
             <div>
                 <TestResultFilter fetchAndFilterTestResults={this.props.fetchAndFilterTestResults} environments={this.props.environments}
-                    filter={{test_id: this.props.test_id_filter, ...this.props.filter}} />
+                    updateNameFilter={this.updateNameFilter}
+                    filter={{test_id: this.props.test_id_filter, name: this.state.name_filter, ...this.props.filter}} />
                 {this.props.test_results.filter(tr => {
                     if ((this.props.filter.status === undefined) || (this.props.filter.status === "Any"))
                         return true;
@@ -38,6 +50,12 @@ class TestResultsList extends Component {
                     if (this.props.filter.ts === undefined)
                         return true;
                     return (tr.date < this.props.filter.ts * 1000);
+                }).filter(tr => {
+                    if ((tr.path.filter(parent =>
+                        parent.toLowerCase().includes(this.state.name_filter.toLowerCase())
+                    )).length > 0)
+                        return true;
+                    return tr.name.toLowerCase().includes(this.state.name_filter.toLowerCase());
                 }).map(test_result => (
                     <TestResult key={test_result.trace_id} test_result={test_result} trace_id={test_result.trace_id} compare_to={this.props.compare_to} />
                 ))}
@@ -107,6 +125,7 @@ class TestResultFilter extends Component {
         this.handleStatusChange = this.handleStatusChange.bind(this);
         this.handleEnvironmentChange = this.handleEnvironmentChange.bind(this);
         this.handleTsChange = this.handleTsChange.bind(this);
+        this.handleNameChange = this.handleNameChange.bind(this);
     }
     
     handleStatusChange(event) {
@@ -118,8 +137,11 @@ class TestResultFilter extends Component {
     }
 
     handleTsChange(event) {
-        this.setState({timestamp: event})
         this.props.fetchAndFilterTestResults(this.props.filter.status, this.props.filter.environment, this.props.filter.test_id, event);
+    }
+
+    handleNameChange(event) {
+        this.props.updateNameFilter(event.target.value);
     }
 
     render() {
@@ -150,7 +172,14 @@ class TestResultFilter extends Component {
                         renderInput={(props, openCalendar, closeCalendar) => <DateInput props={props} openCalendar={openCalendar} value={this.props.filter.ts}/>}
                         dateFormat="DD/MM/YYYY" timeFormat="hh:mm:ss" viewMode="time" defaultValue={new Date()}/>
                 </div>
-        </div>);
+                <div className="input-group" style={{margin: "0 1rem"}}>
+                    <div className="input-group-prepend">
+                        <label className="input-group-text">By Name</label>
+                    </div>
+                    <input type="text" className="form-control" value={this.props.filter.name} onChange={this.handleNameChange}/>
+                </div>
+            </div>
+        );
     }
 }
 
