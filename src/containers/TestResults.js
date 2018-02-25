@@ -12,8 +12,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchTestResults: (status, environment, test_id) => dispatch(fetchTestResults(status, environment, test_id)),
-        fetchAndFilterTestResults: (status, environment, test_id) => dispatch(fetchAndFilterTestResults(status, environment, test_id)),
+        fetchTestResults: (status, environment, test_id, ts) => dispatch(fetchTestResults(status, environment, test_id, ts)),
+        fetchAndFilterTestResults: (status, environment, test_id, ts) => dispatch(fetchAndFilterTestResults(status, environment, test_id, ts)),
         fetchEnvironments: () => dispatch(fetchEnvironments()),
     }
 }

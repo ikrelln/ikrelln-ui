@@ -20,37 +20,46 @@ function updateOldestByFilter(filter, oldest) {
         oldest,
     }
 }
-export function fetchTestResults(status, environment, test_id) {
+export function fetchTestResults(status, environment, test_id, ts) {
     if (status === undefined)
         status = "Any";
+
     let environment_filter = "";
     if (environment !== undefined)
-    environment_filter = "&environment=" + environment;
+        environment_filter = "&environment=" + environment;
+
     let test_id_filter = "";
     if (test_id !== undefined)
         test_id_filter = "&testId=" + test_id;
+
+    let ts_filter = "";
+    if (ts !== undefined)
+        ts_filter = "&ts=" + ts;
+
     return dispatch => {
         dispatch(requestTestResults())
-        return fetch('/api/v1/testresults?status=' + status + environment_filter + test_id_filter)
+        return fetch('/api/v1/testresults?status=' + status + environment_filter + test_id_filter + ts_filter)
             .then(response => response.json())
             .then(json => dispatch(receiveTestResults(json)))
     }
 }
 
 export const FILTER_TEST_RESULTS = 'FILTER_TEST_RESULTS'
-export function filterTestResults(status, environment) {
+export function filterTestResults(status, environment, ts) {
     return {
         type: FILTER_TEST_RESULTS,
-        filter: {status, environment},
+        filter: {status, environment, ts},
     }    
 }
-export function fetchAndFilterTestResults(status, environment, test_id) {
+    }    
+}
+export function fetchAndFilterTestResults(status, environment, test_id, ts) {
     if ((status === undefined) || (status === null))
         status = "Any";
     
     return dispatch => {
-        dispatch(filterTestResults(status, environment))
-        return fetchTestResults(status, environment, test_id)(dispatch);
+        dispatch(filterTestResults(status, environment, ts))
+        return fetchTestResults(status, environment, test_id, ts)(dispatch);
     }
 }
 
