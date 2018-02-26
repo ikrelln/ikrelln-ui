@@ -7,6 +7,48 @@ import { Link } from 'react-router-dom';
 import Radium from 'radium';
 
 export class Trace extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            hidden_span_children: [],
+        };
+
+        this.hideSpanChildren = this.hideSpanChildren.bind(this);
+        this.showSpanChildren = this.showSpanChildren.bind(this);
+    }
+
+    hideSpanChildren(span_id) {
+        var spans_to_hide = [];
+        var new_spans = [span_id];
+        while (new_spans.length !== 0) {
+            var next_new_spans = [];
+            // eslint-disable-next-line
+            new_spans.forEach(span_id => {
+                next_new_spans = next_new_spans.concat(this.props.spans.spans
+                    .filter(span => span.parentId === span_id)
+                    .map(span => span.id))
+            });
+            spans_to_hide = spans_to_hide.concat(new_spans);
+            new_spans = next_new_spans;
+        }
+        this.setState((prevState, props) => ({
+            hidden_span_children: [...new Set(prevState.hidden_span_children.concat(spans_to_hide))]
+        }))
+    }
+
+    showSpanChildren(span_id) {
+        this.setState((prevState, props) => {
+            const index = prevState.hidden_span_children.indexOf(span_id);
+            var new_hidden_span_children = prevState.hidden_span_children;
+            if (index > -1) {
+                new_hidden_span_children.splice(index, 1);
+            }
+            return {
+                hidden_span_children: new_hidden_span_children,
+            };
+        })
+    }
+
     componentDidMount() {
         if (this.props.spans === undefined) {
             this.props.fetchTrace(this.props.trace_id);
@@ -23,7 +65,6 @@ export class Trace extends Component {
         if (this.props.result === undefined) {
             return (<Loading />);
         }
-
         let status_class = "alert" + statusToColorSuffix(this.props.result.status);
         const nb_time_separation = 4;
 
@@ -76,9 +117,14 @@ export class Trace extends Component {
                             </div>
                         ))}
                     </div>
-                    {this.props.spans.spans.map(span => (
+                    {this.props.spans.spans.filter(span => 
+                        !this.state.hidden_span_children.includes(span.parentId)
+                    ).map(span => (
                         <Span key={span.id} span={span} traceStartTs={this.props.spans.spans[0].timestamp}
-                            traceDuration={this.props.spans.spans[0].duration} nb_time_separation={nb_time_separation}/>
+                            traceDuration={this.props.spans.spans[0].duration} nb_time_separation={nb_time_separation}
+                            hideChildren={() => this.hideSpanChildren(span.id)} showChildren={() => this.showSpanChildren(span.id)}
+                            isHidden={this.state.hidden_span_children.includes(span.id)}
+                            hasChildren={this.props.spans.spans.filter(other_span => other_span.parentId ===span.id).length > 0} />
                     ))}
                 </div>
             </div>
@@ -94,6 +140,7 @@ class Span extends Component {
         };
     
         this.toggleTags = this.toggleTags.bind(this);
+        this.toggleChildren = this.toggleChildren.bind(this);
     }
     
     toggleTags() {
@@ -102,21 +149,36 @@ class Span extends Component {
         });
     }
 
+    toggleChildren() {
+        this.props.isHidden ? this.props.showChildren() : this.props.hideChildren();
+    }
+
     render() {
+        const children_toggle_class = this.props.isHidden ? "fa-plus" : "fa-minus";
+
         let left = (this.props.span.timestamp - this.props.traceStartTs) / this.props.traceDuration * 100;
         let width = Math.max(this.props.span.duration / this.props.traceDuration * 100, 0.2);
         let selected_span = this.state.modal ? {border: "1px solid blue"} : {};
         let error_span = this.props.span.tags["error"] ? {backgroundColor: "rgba(211, 18, 18, 0.3)"} : {backgroundColor: "rgba(30, 129, 196, 0.3)"};
         return (
-            <div style={{position: "relative"}}>
+            <div style={{position: "relative", ':hover': {backgroundColor: "rgba(200, 200, 200, 0.2)"}}} onClick={this.toggleTags}>
                 <div style={{display: "flex", justifyContent: "space-evenly", position: "absolute", width: "100%", paddingTop: "5px"}}>
                     {[...Array(this.props.nb_time_separation)].map((x, i) =>
                         (<div key={i} style={{fontWeight: "lighter"}}>&middot;</div>)
                     )}
                 </div>
-                <div style={{left: left.toFixed(1) + "%", width: width.toFixed(1) + "%",
+                <div key={children_toggle_class} style={{left: left.toFixed(1) + "%", width: width.toFixed(1) + "%",
                             position: "relative", whiteSpace: "nowrap", margin: "1px", padding: "2px",
-                            display: "flex", alignItems: "center", ...selected_span, ...error_span}} onClick={this.toggle}>
+                            display: "flex", alignItems: "center", ...selected_span, ...error_span}}>
+                    {this.props.hasChildren ?
+                        <div style={{paddingRight: "0.3em"}} onClick={(event) => {
+                            this.toggleChildren();
+                            event.stopPropagation();
+                        }}>
+                            <i className={"fas " + children_toggle_class} style={{color: "gray", fontSize: "smaller"}}></i>
+                        </div>
+                        : null
+                    }
                     {this.props.span.remoteEndpoint !== null ? 
                         <span className="badge badge-pill badge-info" style={{fontWeight: "inherit" }}>{this.props.span.remoteEndpoint.serviceName}</span>
                         : null
