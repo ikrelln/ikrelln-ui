@@ -164,7 +164,7 @@ class ShortHistory extends Component {
     render() {
         return (
             <div style={{display: "flex", justifyContent: "center"}}>
-                {this.props.results.map(tr => {
+                {this.props.results.sort((a, b) => a.date > b.date).map(tr => {
                     let status_class = "btn" + statusToColorSuffix(tr.status);
                     let label = dateFormat(new Date(tr.date / 1000), "isoDateTime");
                     if ((tr.environment !== undefined) && (tr.environment !== null)) {
