@@ -36,6 +36,5 @@ export function isJson(str) {
     } catch (e) {
         return false;
     }
-    console.log(str);
     return true;
 }
