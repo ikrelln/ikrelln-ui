@@ -3,7 +3,6 @@ import Link from 'react-router-dom/Link';
 import { Loading } from './Loading';
 import dateFormat from 'dateformat';
 import { formatDuration, statusToColorSuffix } from '../helper';
-import Datetime from 'react-datetime';
 
 export class TestTimeline extends Component {
     componentDidMount() {
@@ -21,7 +20,6 @@ export class TestTimeline extends Component {
     }
 
     render() {
-        console.log(this.props);
         if (this.props.main_result === undefined)
             return <Loading />
 
