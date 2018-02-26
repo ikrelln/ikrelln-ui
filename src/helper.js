@@ -26,3 +26,16 @@ export function statusToColorSuffix(status) {
     }
     return status_suffix;
 }
+
+export function isJson(str) {
+    if (str.indexOf("{") === -1) {
+        return false;
+    }
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    console.log(str);
+    return true;
+}

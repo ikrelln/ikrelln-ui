@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Loading } from './Loading';
-import { formatDuration, statusToColorSuffix } from '../helper';
+import { formatDuration, statusToColorSuffix, isJson } from '../helper';
 import dateFormat from 'dateformat';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import Radium from 'radium';
 
 export class Trace extends Component {
     componentDidMount() {
@@ -92,10 +93,10 @@ class Span extends Component {
             modal: false
         };
     
-        this.toggle = this.toggle.bind(this);
+        this.toggleTags = this.toggleTags.bind(this);
     }
     
-    toggle() {
+    toggleTags() {
         this.setState({
             modal: !this.state.modal
         });
@@ -122,21 +123,32 @@ class Span extends Component {
                     }
                     <div style={{padding: "0px 2px"}}>{this.props.span.name}</div>
                     <div style={{fontStyle: "italic", fontSize: "0.7rem"}}>{formatDuration(this.props.span.duration)}</div>
-                    <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <ModalHeader>
-                        <div style={{display: "flex", justifyContent: "space-between"}}>
-                            <div>{this.props.span.name}</div>
-                            <div style={{fontStyle: "italic"}}>Tags</div>
-                        </div>
-                    </ModalHeader>
-                    <ModalBody>
-                        {Object.keys(this.props.span.tags).map((key, index) => 
-                            <div key={key} style={{display: "flex", justifyContent: "space-between"}}>
-                                <div>{key}</div>
-                                <div>{this.props.span.tags[key]}</div>
+                    <Modal isOpen={this.state.modal} toggle={this.toggleTags} className={this.props.className}
+                        size={Object.keys(this.props.span.tags).filter((key, index) => isJson(this.props.span.tags[key])).length > 0 ? "lg" : ""}>
+                        <ModalHeader>
+                            <div style={{display: "flex", justifyContent: "space-between"}}>
+                                <div>{this.props.span.name}</div>
+                                <div style={{fontStyle: "italic"}}>Tags</div>
                             </div>
-                        )}
-                    </ModalBody>
+                        </ModalHeader>
+                        <ModalBody>
+                            <div style={{display: "flex", justifyContent: "space-between", fontSize: "smaller", fontWeight: "bolder", borderBottom: "2px solid darkgray", marginBottom: "1rem"}}>
+                                <div style={{flexGrow: 0, width: "150px"}}>Key</div>
+                                <div style={{flexGrow: 2}}>Value</div>
+                            </div>
+                            {Object.keys(this.props.span.tags).sort().map((key, index) => 
+                                <div key={key} style={{display: "flex", justifyContent: "space-between", fontSize: "smaller", borderBottom: "1px solid lightgray",
+                                    padding: "0.2rem 0", backgroundColor: index % 2 === 0 ? "#F9F9F9" : "#FEFEFE"}}>
+                                    <div style={{flexGrow: 0, width: "150px"}}>{key}</div>
+                                    {isJson(this.props.span.tags[key])
+                                        ? <div style={{flexGrow: 2, border: "1px dashed darkgray", borderRadius: "3px", backgroundColor: "#F5F5F5", overflow: "auto", padding: "0.1rem 0"}}>
+                                            <pre style={{marginBottom: "0"}}>{JSON.stringify(JSON.parse(this.props.span.tags[key]), null, 2).replace(/\\n/g, '\n') }</pre>
+                                        </div>
+                                        : <div style={{flexGrow: 2}}>{this.props.span.tags[key].replace(/\n/g, '<br />')}</div>
+                                    }
+                                </div>
+                            )}
+                        </ModalBody>
                     </Modal>
                 </div>
             </div>
@@ -144,6 +156,8 @@ class Span extends Component {
 
     }
 }
+
+Span = Radium(Span);
 
 export class TraceComparator extends Component {
     componentDidMount() {
