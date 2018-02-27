@@ -6,11 +6,15 @@ import TestResults from '../containers/TestResults';
 import { statusToColorSuffix } from '../helper';
 import dateFormat from 'dateformat';
 import TestTimeline from '../containers/TestTimeline';
+import Radium from 'radium';
 
 export class TestDetails extends Component {
     componentDidMount() {
         if (this.props.test === undefined) {
             this.props.fetchTest(this.props.test_id);
+        }
+        if ((this.props.children.length !== (this.props.test === undefined ? -1 : this.props.test.children.length))) {
+            this.props.fetchTestChildren(this.props.test_id);
         }
     }
     
@@ -31,19 +35,19 @@ export class TestDetails extends Component {
                                 <Link to={"/ikrelln/tests/root"}>root</Link>
                             </div>
                         </li>
-                        {this.props.test.test.path.map(item => (
+                        {this.props.test.path.map(item => (
                             <li className="breadcrumb-item" key={item.id}>
                                 <Link to={"/ikrelln/tests/" + item.id}>{item.name}</Link>
                             </li>
                         ))}
-                        <li className="breadcrumb-item active">{this.props.test.test.name}</li>
+                        <li className="breadcrumb-item active">{this.props.test.name}</li>
                     </ol>
                 </nav>
-                <ShortHistory results={this.props.test.test.last_results} />
+                <ShortHistory results={this.props.test.last_results} />
                 <ul className="nav nav-tabs" style={{margin: "5px"}}>
                     <li className="nav-item">
-                        <NavLink className={"nav-link" + (this.props.test.test.last_results.length > 0 ? "" : " disabled")} 
-                            to={"/ikrelln/tests/" + this.props.test.test.test_id + "/results/latest"}
+                        <NavLink className={"nav-link" + (this.props.test.last_results.length > 0 ? "" : " disabled")} 
+                            to={"/ikrelln/tests/" + this.props.test.test_id + "/results/latest"}
                             isActive={(match, location) => {
                                 let match_dynamic = matchPath(location.pathname, {
                                   path: '/ikrelln/tests/:test_id/results/:trace_id',
@@ -52,14 +56,14 @@ export class TestDetails extends Component {
                                 });
                                 return (match_dynamic != null)
                                     && ((match_dynamic.params.trace_id === "latest")
-                                        || (match_dynamic.params.trace_id === this.props.test.test.last_results[0].trace_id))
+                                        || (match_dynamic.params.trace_id === this.props.test.last_results[0].trace_id))
                             }}>
                             Latest Trace
                         </NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className={"nav-link" + (this.props.test.test.last_results.length > 1 ? "" : " disabled")} exact 
-                            to={"/ikrelln/tests/" + this.props.test.test.test_id + "/results"}>
+                        <NavLink className={"nav-link" + (this.props.test.last_results.length > 1 ? "" : " disabled")} exact 
+                            to={"/ikrelln/tests/" + this.props.test.test_id + "/results"}>
                             <div style={{display: "flex"}}>
                                 <div style={{paddingRight: "1rem"}}>
                                     <i className="fas fa-reply-all" style={{color: "gray"}}></i>
@@ -71,8 +75,8 @@ export class TestDetails extends Component {
                         </NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className={"nav-link" + (this.props.test.test.last_results.length > 0 ? "" : " disabled")}
-                            to={"/ikrelln/tests/" + this.props.test.test.test_id + "/stats"}>
+                        <NavLink className={"nav-link" + (this.props.test.last_results.length > 0 ? "" : " disabled")}
+                            to={"/ikrelln/tests/" + this.props.test.test_id + "/stats"}>
                             <div style={{display: "flex"}}>
                                 <div style={{paddingRight: "1rem"}}>
                                     <i className="fas fa-stethoscope" style={{color: "gray"}}></i>
@@ -84,8 +88,8 @@ export class TestDetails extends Component {
                         </NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className={"nav-link" + (this.props.test.test.children.length > 0 ? "" : " disabled")} 
-                            to={"/ikrelln/tests/" + this.props.test.test.test_id + "/children"}>
+                        <NavLink className={"nav-link" + (this.props.test.children.length > 0 ? "" : " disabled")} 
+                            to={"/ikrelln/tests/" + this.props.test.test_id + "/children"}>
                             <div style={{display: "flex"}}>
                                 <div style={{paddingRight: "1rem"}}>
                                     <i className="fas fa-sitemap" style={{color: "gray"}}></i>
@@ -105,32 +109,32 @@ export class TestDetails extends Component {
                         return (<TraceComparator base={match.params.trace_id1} with={match.params.trace_id2} />)
                     }} />
                     <Route path="/ikrelln/tests/:test_id/results/:trace_id1/compare" render={({match}) => {
-                        return <TestResults key={this.props.test.test.test_id} test_id_filter={this.props.test.test.test_id}
+                        return <TestResults key={this.props.test.test_id} test_id_filter={this.props.test.test_id}
                                                 compare_to={{trace_id: match.params.trace_id1, name: "selected"}}/>;
                     }} />
                     <Route path="/ikrelln/tests/:test_id/results/:trace_id" render={({match}) => {
                         let trace_id;
                         if (match.params.trace_id === "latest") {
-                            trace_id = this.props.test.test.last_results[0].trace_id;
+                            trace_id = this.props.test.last_results[0].trace_id;
                         } else {
                             trace_id = match.params.trace_id;
                         }
                         return (<Trace key={trace_id} trace_id={trace_id} />)
                     }} />
                     <Route path="/ikrelln/tests/:test_id/results" render={() => {
-                        return <TestResults key={this.props.test.test.test_id} test_id_filter={this.props.test.test.test_id}
-                                                compare_to={{trace_id: this.props.test.test.last_results[0].trace_id, name: "latest"}}/>;
+                        return <TestResults key={this.props.test.test_id} test_id_filter={this.props.test.test_id}
+                                                compare_to={{trace_id: this.props.test.last_results[0].trace_id, name: "latest"}}/>;
                     }} />
                     <Route path="/ikrelln/tests/:test_id/stats" render={() => {
                         return (<div>display stats about test: number of success/failures, min/average/max duration, ... (global/per environment)</div>);
                     }} />
                     <Route path="/ikrelln/tests/:test_id/children" render={() => {
-                        return (<Children key={this.props.test.test.test_id} children={this.props.test.test.children} />)
+                        return (<Children key={this.props.test.test_id} children={this.props.test.children} childrenFullDetails={this.props.children} />)
                     }} />
                     <Route render={() => <Redirect to={
-                        this.props.test.test.last_results.length > 0 ?
-                            "/ikrelln/tests/" + this.props.test.test.test_id + "/results/latest"
-                            : "/ikrelln/tests/" + this.props.test.test.test_id + "/children"
+                        this.props.test.last_results.length > 0 ?
+                            "/ikrelln/tests/" + this.props.test.test_id + "/results/latest"
+                            : "/ikrelln/tests/" + this.props.test.test_id + "/children"
                     }/>} />
                 </Switch>
             </div>
@@ -141,9 +145,9 @@ export class TestDetails extends Component {
 class Children extends Component {
     render() {
         return (
-            <div>
-                {this.props.children.map(testChild => (
-                    <TestChild key={testChild.id} test={testChild} />
+            <div style={{display: "flex", flexDirection: "column"}}>
+                {this.props.children.map((testChild, index) => (
+                    <TestChild key={testChild.id} test={testChild} details={this.props.childrenFullDetails.find(fd => fd.test_id === testChild.id)} style={{backgroundColor: index % 2 === 1 ? "#F9F9F9" : "#FEFEFE"}}/>
                 ))}
             </div>
         );
@@ -153,18 +157,28 @@ class Children extends Component {
 class TestChild extends Component {
     render() {
         return (
-            <div>
-                <Link to={"/ikrelln/tests/" + this.props.test.id}>{this.props.test.name}</Link>
+            <div style={{display: "flex", justifyContent: "flex-start", marginTop: "0.2em", ...this.props.style,
+                ':hover': {backgroundColor: "rgba(200, 200, 200, 0.2)"}}}>
+                <Link style={{width: "35em", marginRight: "0.5em", textAlign: "right"}}
+                    to={"/ikrelln/tests/" + this.props.test.id}>{this.props.test.name}
+                </Link>
+                {this.props.details !== undefined
+                    ? <ShortHistory style={{justifyContent: "flex-start"}} results={this.props.details.last_results.slice(0, 3)} order = "desc" />
+                    : null}
+                {this.props.details !== undefined ? this.props.details.children.length > 0
+                    ? <div style={{flexGrow: 0, width: "10em", fontStyle: "italic", textAlign: "left", fontSize: "smaller", alignSelf: "center"}}>{this.props.details.children.length} children</div>
+                    : null : null}
             </div>
         );
     }
 }
+TestChild = Radium(TestChild);
 
 class ShortHistory extends Component {
     render() {
         return (
-            <div style={{display: "flex", justifyContent: "center"}}>
-                {this.props.results.sort((a, b) => a.date > b.date).map(tr => {
+            <div style={{display: "flex", justifyContent: "center", ...this.props.style}}>
+                {this.props.results.sort(this.props.order === "desc" ? (a, b) => a.date < b.date : (a, b) => a.date > b.date).map(tr => {
                     let status_class = "btn" + statusToColorSuffix(tr.status);
                     let label = dateFormat(new Date(tr.date / 1000), "isoDateTime");
                     if ((tr.environment !== undefined) && (tr.environment !== null)) {

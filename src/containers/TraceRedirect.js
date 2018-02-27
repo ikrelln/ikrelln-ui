@@ -4,7 +4,7 @@ import { fetchTestResultForTrace } from '../actions/testDetails';
 
 const mapStateToProps = (state, props) => {
     return {
-        testResult: state.testDetails.testResults.find(tr => tr.trace_id === props.trace_id),
+        testResult: state.testResults.results.find(tr => tr.trace_id === props.trace_id),
     }
 }
 

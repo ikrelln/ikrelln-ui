@@ -38,3 +38,11 @@ export function isJson(str) {
     }
     return true;
 }
+
+export const sortBykey = (key) => (a, b) => {
+    if (a[key] < b[key])
+        return 1;
+    if (a[key] === b[key])
+        return 0;
+    return -1;
+};

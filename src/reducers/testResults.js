@@ -1,13 +1,8 @@
 import { RECEIVE_TEST_RESULT_FOR_TRACE } from '../actions/testDetails';
 import { RECEIVE_TEST_RESULTS, RECEIVE_ENVIRONMENTS, FILTER_TEST_RESULTS, CLEAR_FILTER_TEST_RESULTS } from '../actions/testResults';
+import { sortBykey } from '../helper';
 
-const sortByDate = (a, b) => {
-    if (a['date'] < b['date'])
-        return 1;
-    if (a['date'] === b['date'])
-        return 0;
-    return -1;
-};
+const sortByDate = sortBykey("date");
 
 const testResults = (state = { results: [], environments: [], filter: {} }, action) => {
     switch (action.type) {

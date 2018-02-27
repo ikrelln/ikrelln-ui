@@ -72,3 +72,36 @@ export function fetchTest(test_id) {
             .then(json => dispatch(receiveTest(test_id, json)))
     }
 }
+
+export const REQUEST_TEST_CHILDREN = 'REQUEST_TEST_CHILDREN'
+function requestTestChildren() {
+    return {
+        type: REQUEST_TEST_CHILDREN
+    }
+}
+export const RECEIVE_TEST_CHILDREN = 'RECEIVE_TEST_CHILDREN'
+function receiveTestChildren(test_id, json) {
+    return {
+        type: RECEIVE_TEST_CHILDREN,
+        children: {
+            test_id,
+            children: json
+        },
+        receivedAt: Date.now()
+    }
+}
+export function fetchTestChildren(test_id) {
+    return dispatch => {
+        dispatch(requestTestChildren())
+        return fetch('/api/v1/tests?parentId=' + test_id)
+            .then(response => {
+                if (!response.ok) {
+                    throw Error(response.statusText);
+                }
+                return response;
+            })
+            .then(response => response.json())
+            .then(json => dispatch(receiveTestChildren(test_id, json)))
+            .catch(() => {})
+    }
+}

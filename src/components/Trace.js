@@ -59,12 +59,10 @@ export class Trace extends Component {
     }
 
     render() {
-        if (this.props.spans === undefined) {
-            return (<Loading />);
-        }
         if (this.props.result === undefined) {
             return (<Loading />);
         }
+        const spans = this.props.spans === undefined ? [] : this.props.spans;
         let status_class = "alert" + statusToColorSuffix(this.props.result.status);
         const nb_time_separation = 4;
 
@@ -109,24 +107,26 @@ export class Trace extends Component {
                     </div>
                 </div>
 
-                <div style={{display: "flex", flexDirection: "column", textAlign: "left"}}>
-                    <div style={{display: "flex", justifyContent: "space-evenly"}}>
-                        {[...Array(nb_time_separation)].map((x, i) => (
-                            <div key={i} style={{fontWeight: "lighter", fontSize: "smaller", fontStyle: "italic", width: "9ch"}}>
-                                {formatDuration(this.props.spans.spans[0].duration / (nb_time_separation + 1) * (i + 1))}
-                            </div>
+                {spans.length === 0 ? <Loading />
+                    : <div style={{display: "flex", flexDirection: "column", textAlign: "left"}}>
+                        <div style={{display: "flex", justifyContent: "space-evenly"}}>
+                            {[...Array(nb_time_separation)].map((x, i) => (
+                                <div key={i} style={{fontWeight: "lighter", fontSize: "smaller", fontStyle: "italic", width: "9ch"}}>
+                                    {formatDuration(this.props.spans.spans[0].duration / (nb_time_separation + 1) * (i + 1))}
+                                </div>
+                            ))}
+                        </div>
+                        {this.props.spans.spans.filter(span => 
+                            !this.state.hidden_span_children.includes(span.parentId)
+                        ).map(span => (
+                            <Span key={span.id} span={span} traceStartTs={this.props.spans.spans[0].timestamp}
+                                traceDuration={this.props.spans.spans[0].duration} nb_time_separation={nb_time_separation}
+                                hideChildren={() => this.hideSpanChildren(span.id)} showChildren={() => this.showSpanChildren(span.id)}
+                                isHidden={this.state.hidden_span_children.includes(span.id)}
+                                hasChildren={this.props.spans.spans.filter(other_span => other_span.parentId ===span.id).length > 0} />
                         ))}
                     </div>
-                    {this.props.spans.spans.filter(span => 
-                        !this.state.hidden_span_children.includes(span.parentId)
-                    ).map(span => (
-                        <Span key={span.id} span={span} traceStartTs={this.props.spans.spans[0].timestamp}
-                            traceDuration={this.props.spans.spans[0].duration} nb_time_separation={nb_time_separation}
-                            hideChildren={() => this.hideSpanChildren(span.id)} showChildren={() => this.showSpanChildren(span.id)}
-                            isHidden={this.state.hidden_span_children.includes(span.id)}
-                            hasChildren={this.props.spans.spans.filter(other_span => other_span.parentId ===span.id).length > 0} />
-                    ))}
-                </div>
+                }
             </div>
         );
     }
@@ -200,7 +200,7 @@ class Span extends Component {
                             </div>
                             {Object.keys(this.props.span.tags).sort().map((key, index) => 
                                 <div key={key} style={{display: "flex", justifyContent: "space-between", fontSize: "smaller", borderBottom: "1px solid lightgray",
-                                    padding: "0.2rem 0", backgroundColor: index % 2 === 0 ? "#F9F9F9" : "#FEFEFE"}}>
+                                    padding: "0.2rem 0", backgroundColor: index % 2 === 1 ? "#F9F9F9" : "#FEFEFE"}}>
                                     <div style={{flexGrow: 0, width: "150px"}}>{key}</div>
                                     {isJson(this.props.span.tags[key])
                                         ? <div style={{flexGrow: 2, border: "1px dashed darkgray", borderRadius: "3px", backgroundColor: "#F5F5F5", overflow: "auto", padding: "0.1rem 0"}}>
