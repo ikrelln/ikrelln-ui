@@ -6,6 +6,7 @@ const mapStateToProps = (state, props) => {
     return {
         spans: state.testDetails.traces.find(tr => tr.trace_id === props.trace_id),
         result: state.testResults.results.find(tr => tr.trace_id === props.trace_id),
+        custom_component: state.custom.result_component,
     }
 }
 

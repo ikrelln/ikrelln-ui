@@ -44,6 +44,13 @@ export class TestDetails extends Component {
                     </ol>
                 </nav>
                 <ShortHistory results={this.props.test.last_results} />
+                {this.props.custom_component === undefined
+                    ? null
+                    : <div style={{margin: "0.2em", border: "1px dashed lightgray", borderRadius: "5px", backgroundColor: "bisque", display: "flex", position: "relative", justifyContent: "center"}}>
+                        <i className="fas fa-magic" style={{position: "absolute", top: "5px", left: "5px", color: "grey"}}></i>
+                        <div dangerouslySetInnerHTML={this.props.custom_component(this.props.test)} />
+                    </div>
+                }
                 <ul className="nav nav-tabs" style={{margin: "5px"}}>
                     <li className="nav-item">
                         <NavLink className={"nav-link" + (this.props.test.last_results.length > 0 ? "" : " disabled")} 

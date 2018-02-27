@@ -62,7 +62,7 @@ export class Trace extends Component {
         if (this.props.result === undefined) {
             return (<Loading />);
         }
-        const spans = this.props.spans === undefined ? [] : this.props.spans;
+        const spans = this.props.spans === undefined ? [] : this.props.spans.spans;
         let status_class = "alert" + statusToColorSuffix(this.props.result.status);
         const nb_time_separation = 4;
 
@@ -97,14 +97,24 @@ export class Trace extends Component {
                             {formatDuration(this.props.result.duration)}
                         </div>
                     </div>
-                    <div style={{flex: "1", display: "flex", justifyContent: "center"}}>
-                        <div style={{paddingRight: "1rem"}}>
-                            <i className="fas fa-globe" style={{color: "gray"}}></i>
+                    {this.props.result.environment !== null 
+                        ? <div style={{flex: "1", display: "flex", justifyContent: "center"}}>
+                            <div style={{paddingRight: "1rem"}}>
+                                <i className="fas fa-globe" style={{color: "gray"}}></i>
+                            </div>
+                            <div>
+                                {this.props.result.environment}
+                            </div>
                         </div>
-                        <div>
-                            {this.props.result.environment}
+                        : null
+                    }
+                    {this.props.custom_component === undefined
+                        ? null
+                        : <div style={{flex: "1", margin: "0.2em", border: "1px dashed lightgray", borderRadius: "5px", backgroundColor: "bisque", display: "flex", position: "relative", justifyContent: "center"}}>
+                            <i className="fas fa-magic" style={{position: "absolute", top: "5px", left: "5px", color: "grey"}}></i>
+                            <div dangerouslySetInnerHTML={this.props.custom_component(this.props.result, spans)} />
                         </div>
-                    </div>
+                    }
                 </div>
 
                 {spans.length === 0 ? <Loading />

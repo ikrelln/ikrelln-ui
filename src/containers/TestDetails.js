@@ -8,6 +8,7 @@ const mapStateToProps = (state, props) => {
         children: state.testDetails.tests.filter(td => 
             props.test_id === "root" ? td.path.length === 0
                 : td.path.find(p => p.id === props.test_id) !== undefined),
+        custom_component: state.custom.test_component,
     }
 }
 
