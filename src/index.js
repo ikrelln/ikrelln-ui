@@ -1,5 +1,6 @@
 import 'babel-polyfill'
 import 'bootstrap/dist/css/bootstrap.css';
+import './react-datetime.css';
 
 import thunkMiddleware from 'redux-thunk'
 import React from 'react';
