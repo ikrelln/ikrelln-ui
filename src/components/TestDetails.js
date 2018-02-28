@@ -23,6 +23,10 @@ export class TestDetails extends Component {
             return (<Loading />);
         }
 
+        const latest_trace_id = this.props.test.last_results.length > 0
+                ? this.props.test.last_results.sort((a, b) => a.date < b.date)[0].trace_id
+                : undefined;
+
         return (
             <div>
                 <nav aria-label="breadcrumb">
@@ -63,7 +67,7 @@ export class TestDetails extends Component {
                                 });
                                 return (match_dynamic != null)
                                     && ((match_dynamic.params.trace_id === "latest")
-                                        || (match_dynamic.params.trace_id === this.props.test.last_results[0].trace_id))
+                                        || (match_dynamic.params.trace_id === latest_trace_id))
                             }}>
                             Latest Trace
                         </NavLink>
@@ -122,7 +126,7 @@ export class TestDetails extends Component {
                     <Route path="/ikrelln/tests/:test_id/results/:trace_id" render={({match}) => {
                         let trace_id;
                         if (match.params.trace_id === "latest") {
-                            trace_id = this.props.test.last_results[0].trace_id;
+                            trace_id = latest_trace_id;
                         } else {
                             trace_id = match.params.trace_id;
                         }
@@ -130,7 +134,7 @@ export class TestDetails extends Component {
                     }} />
                     <Route path="/ikrelln/tests/:test_id/results" render={() => {
                         return <TestResults key={this.props.test.test_id} test_id_filter={this.props.test.test_id}
-                                                compare_to={{trace_id: this.props.test.last_results[0].trace_id, name: "latest"}}/>;
+                                                compare_to={{trace_id: latest_trace_id, name: "latest"}}/>;
                     }} />
                     <Route path="/ikrelln/tests/:test_id/stats" render={() => {
                         return (<div>display stats about test: number of success/failures, min/average/max duration, ... (global/per environment)</div>);
