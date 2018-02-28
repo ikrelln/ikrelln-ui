@@ -204,7 +204,22 @@ class Span extends Component {
                             </div>
                         </ModalHeader>
                         <ModalBody>
-                            <div style={{display: "flex", justifyContent: "space-between", fontSize: "smaller", fontWeight: "bolder", borderBottom: "2px solid darkgray", marginBottom: "1rem"}}>
+                            <div style={{display: "flex", justifyContent: "space-between", fontSize: "smaller", fontWeight: "bolder", borderBottom: "2px solid darkgray", marginBottom: "0.7rem"}}>
+                                <div style={{flexGrow: 0}}>Span Time Informations</div>
+                            </div>
+                            <div style={{display: "flex", justifyContent: "space-between", fontSize: "smaller", borderBottom: "1px solid lightgray", padding: "0.2rem 0", backgroundColor: "#FEFEFE"}}>
+                                <div style={{flexGrow: 0, width: "150px"}}>Beginning</div>
+                                <div style={{flexGrow: 2}}>{dateFormat(new Date(this.props.span.timestamp / 1000), "isoDateTime")}</div>
+                            </div>
+                            <div style={{display: "flex", justifyContent: "space-between", fontSize: "smaller", borderBottom: "1px solid lightgray", padding: "0.2rem 0", backgroundColor: "#F9F9F9"}}>
+                                <div style={{flexGrow: 0, width: "150px"}}>Beginning in span</div>
+                                <div style={{flexGrow: 2}}>{formatDuration(this.props.span.timestamp - this.props.traceStartTs)}</div>
+                            </div>
+                            <div style={{display: "flex", justifyContent: "space-between", fontSize: "smaller", borderBottom: "1px solid lightgray", padding: "0.2rem 0", backgroundColor: "#FEFEFE"}}>
+                                <div style={{flexGrow: 0, width: "150px"}}>Duration</div>
+                                <div style={{flexGrow: 2}}>{formatDuration(this.props.span.duration)}</div>
+                            </div>
+                            <div style={{display: "flex", justifyContent: "space-between", fontSize: "smaller", fontWeight: "bolder", borderBottom: "2px solid darkgray", marginTop: "1rem", marginBottom: "0.7rem"}}>
                                 <div style={{flexGrow: 0, width: "150px"}}>Key</div>
                                 <div style={{flexGrow: 2}}>Value</div>
                             </div>
