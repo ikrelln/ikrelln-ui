@@ -7,6 +7,7 @@ import { statusToColorSuffix } from '../helper';
 import dateFormat from 'dateformat';
 import TestTimeline from '../containers/TestTimeline';
 import Radium from 'radium';
+import TestStats from '../containers/TestStats';
 
 export class TestDetails extends Component {
     componentDidMount() {
@@ -137,7 +138,7 @@ export class TestDetails extends Component {
                                                 compare_to={{trace_id: latest_trace_id, name: "latest"}}/>;
                     }} />
                     <Route path="/ikrelln/tests/:test_id/stats" render={() => {
-                        return (<div>display stats about test: number of success/failures, min/average/max duration, ... (global/per environment)</div>);
+                        return (<TestStats test_id={this.props.test.test_id} />);
                     }} />
                     <Route path="/ikrelln/tests/:test_id/children" render={() => {
                         return (<Children key={this.props.test.test_id} children={this.props.test.children} childrenFullDetails={this.props.children} />)
