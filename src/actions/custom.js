@@ -8,6 +8,7 @@ export const RECEIVE_TEST_COMPONENT = 'RECEIVE_TEST_COMPONENT'
 function receiveTestComponent(json) {
     return {
         type: RECEIVE_TEST_COMPONENT,
+        // eslint-disable-next-line
         script: eval(json.source)
     }
 }
@@ -30,6 +31,7 @@ export const RECEIVE_RESULT_COMPONENT = 'RECEIVE_RESULT_COMPONENT'
 function receiveResultComponent(json) {
     return {
         type: RECEIVE_RESULT_COMPONENT,
+        // eslint-disable-next-line
         script: eval(json.source)
     }
 }

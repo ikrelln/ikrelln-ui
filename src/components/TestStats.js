@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-import Link from 'react-router-dom/Link';
-import { Loading } from './Loading';
-import dateFormat from 'dateformat';
-import { formatDuration, statusToColorSuffix } from '../helper';
-import Datetime from 'react-datetime';
+import { formatDuration } from '../helper';
 
 export class TestStats extends Component {
     componentDidMount() {
