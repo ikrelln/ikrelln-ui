@@ -4,6 +4,7 @@ import { Route, Switch, NavLink, matchPath, Redirect } from 'react-router-dom';
 import TestResults from './containers/TestResults';
 import TestDetails from './containers/TestDetails';
 import TraceRedirect from './containers/TraceRedirect';
+import Reports from './containers/Reports';
 
 class App extends Component {
   render() {
@@ -42,7 +43,7 @@ class App extends Component {
               return (<TestDetails key={match.params.test_id} test_id={match.params.test_id} match={match} />)
             }} />
             <Route path="/ikrelln/results" component={TestResults} />
-            <Route path="/ikrelln/reports" render={() => <h1>Reports</h1>} />
+            <Route path="/ikrelln/reports" component={Reports} />
             <Route path="/ikrelln/setup" render={() => <h1>Setup</h1>} />
             <Route render={() => <Redirect to="/ikrelln/results" />} />
           </Switch>
