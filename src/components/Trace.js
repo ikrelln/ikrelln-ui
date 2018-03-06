@@ -219,6 +219,11 @@ class Span extends Component {
                                 <div style={{flexGrow: 0, width: "150px"}}>Duration</div>
                                 <div style={{flexGrow: 2}}>{formatDuration(this.props.span.duration)}</div>
                             </div>
+                            {this.props.span.remoteEndpoint !== null ? 
+                                <div style={{display: "flex", justifyContent: "space-between", fontSize: "smaller", borderBottom: "1px solid lightgray", padding: "0.2rem 0", backgroundColor: "#FEFEFE"}}>
+                                    <div style={{flexGrow: 0}}><Link to={"/ikrelln/reports/" + this.props.span.remoteEndpoint.serviceName + "#" + this.props.span.name}>Endpoint Report</Link></div>
+                                </div>                        
+                                : null}
                             <div style={{display: "flex", justifyContent: "space-between", fontSize: "smaller", fontWeight: "bolder", borderBottom: "2px solid darkgray", marginTop: "1rem", marginBottom: "0.7rem"}}>
                                 <div style={{flexGrow: 0, width: "150px"}}>Key</div>
                                 <div style={{flexGrow: 2}}>Value</div>

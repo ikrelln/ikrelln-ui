@@ -8,10 +8,10 @@ const reports = (state = { report_list: undefined }, action) => {
                 report_list: action.reports
             })
         case RECEIVE_REPORT:
-            var test = {};
-            test[action.report.name] = action.report;
+            var new_report = {};
+            new_report[action.environment + "-" + action.report.name] = action.report;
             return Object.assign({}, state, {
-                report_details: Object.assign({}, state.report_details, test)
+                report_details: Object.assign({}, state.report_details, new_report)
             })
         default:
             return state

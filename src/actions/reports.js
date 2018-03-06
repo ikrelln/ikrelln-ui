@@ -27,17 +27,21 @@ function requestReport() {
     }
 }
 export const RECEIVE_REPORT = 'RECEIVE_REPORT'
-function receiveReport(json) {
+function receiveReport(json, environment) {
     return {
         type: RECEIVE_REPORT,
-        report: json
+        report: json,
+        environment
     }
 }
-export function fetchReport(name) {
+export function fetchReport(name, environment) {
+    var env_filter = "";
+    if (environment !== "")
+        env_filter = "?environment=" + environment;
     return dispatch => {
         dispatch(requestReport())
-        return fetch('/api/v1/reports/' + name)
+        return fetch('/api/v1/reports/' + name + env_filter)
             .then(response => response.json())
-            .then(json => dispatch(receiveReport(json)))
+            .then(json => dispatch(receiveReport(json, environment)))
     }
 }
