@@ -108,7 +108,7 @@ export class Trace extends Component {
                         </div>
                         : null
                     }
-                    {this.props.custom_component === undefined
+                    {(this.props.custom_component === undefined) || (spans.length === 0)
                         ? null
                         : <div style={{flex: "1", margin: "0.2em", border: "1px dashed lightgray", borderRadius: "5px", backgroundColor: "bisque", display: "flex", position: "relative", justifyContent: "center"}}>
                             <i className="fas fa-magic" style={{position: "absolute", top: "5px", left: "5px", color: "grey"}}></i>
