@@ -66,8 +66,9 @@ export class Reports extends Component {
                                 <div style={{display: "flex", flexWrap: "wrap"}}>
                                     {this.props.reports.map(report => 
                                         <Link key={report.name} to={"/ikrelln/reports/" + report.name} 
-                                            style={{flex: "1", margin: "0.5em", minWidth: "10em"}}>
-                                            <div>{report.name}</div>
+                                            style={{flex: "1", margin: "0.5em", padding: "0.5em", minWidth: "15em", minHeight: "5em",
+                                                display: "flex", flexDirection: "column", border: "1px dashed grey", borderRadius: "10px", justifyContent: "center"}}>
+                                            <div style={{textTransform: "capitalize"}}>{report.name}</div>
                                             <div style={{fontSize: "xx-small", fontStyle: "italic"}}>{report.last_update}</div>
                                         </Link>
                                     )}
@@ -150,7 +151,7 @@ class Report extends Component {
 
         return (
             <div>
-                <h2>{this.props.report_name}</h2>
+                <h2 style={{textTransform: "capitalize"}}>{this.props.report_name}</h2>
                 <div>
                     {Object.keys(this.props.report.categories).sort().map((cat, index) => {
                         return (
