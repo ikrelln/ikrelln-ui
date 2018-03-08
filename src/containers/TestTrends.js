@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { TestStats as component } from '../components/TestStats';
+import { TestTrends as component } from '../components/TestTrends';
 import { fetchTestResults, fetchEnvironments } from '../actions/testResults';
 
 const mapStateToProps = (state, props) => {
@@ -16,9 +16,9 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-const TestStats = connect(
+const TestTrends = connect(
     mapStateToProps,
     mapDispatchToProps
 )(component)
 
-export default TestStats
+export default TestTrends

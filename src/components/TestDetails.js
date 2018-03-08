@@ -7,7 +7,7 @@ import { statusToColorSuffix } from '../helper';
 import dateFormat from 'dateformat';
 import TestTimeline from '../containers/TestTimeline';
 import Radium from 'radium';
-import TestStats from '../containers/TestStats';
+import TestTrends from '../containers/TestTrends';
 
 export class TestDetails extends Component {
     componentDidMount() {
@@ -88,13 +88,13 @@ export class TestDetails extends Component {
                     </li>
                     <li className="nav-item">
                         <NavLink className={"nav-link" + (this.props.test.last_results.length > 0 ? "" : " disabled")}
-                            to={"/ikrelln/tests/" + this.props.test.test_id + "/stats"}>
+                            to={"/ikrelln/tests/" + this.props.test.test_id + "/trends"}>
                             <div style={{display: "flex"}}>
                                 <div style={{paddingRight: "1rem"}}>
                                     <i className="fas fa-stethoscope" style={{color: "gray"}}></i>
                                 </div>
                                 <div>
-                                    Statistics
+                                    Trends
                                 </div>
                             </div>
                         </NavLink>
@@ -137,8 +137,8 @@ export class TestDetails extends Component {
                         return <TestResults key={this.props.test.test_id} test_id_filter={this.props.test.test_id}
                                                 compare_to={{trace_id: latest_trace_id, name: "latest"}}/>;
                     }} />
-                    <Route path="/ikrelln/tests/:test_id/stats" render={() => {
-                        return (<TestStats test_id={this.props.test.test_id} />);
+                    <Route path="/ikrelln/tests/:test_id/trends" render={() => {
+                        return (<TestTrends test_id={this.props.test.test_id} />);
                     }} />
                     <Route path="/ikrelln/tests/:test_id/children" render={() => {
                         return (<Children key={this.props.test.test_id} children={this.props.test.children} childrenFullDetails={this.props.children} />)
