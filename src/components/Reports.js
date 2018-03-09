@@ -53,6 +53,11 @@ export class Reports extends Component {
                                                 display: "flex", flexDirection: "column", border: "1px dashed grey", borderRadius: "10px", justifyContent: "center"}}>
                                             <div style={{textTransform: "capitalize"}}>{report.name}</div>
                                             <div style={{fontSize: "xx-small", fontStyle: "italic"}}>{report.last_update}</div>
+                                            <div style={{display: "flex", fontSize: "smaller"}}>
+                                            {Object.keys(report.summary).sort().map(key => 
+                                                <div className={"btn" + statusToColorSuffix(key)} key={key} style={{flex: report.summary[key]}}>{report.summary[key] != 0 ? report.summary[key] : null}</div>
+                                            )}
+                                            </div>
                                         </Link>
                                     )}
                                 </div>
