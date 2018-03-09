@@ -65,19 +65,19 @@ class TestStatsPerEnvPerPeriod extends Component {
             <div style={{display: "flex", flexDirection: "column", flex: "2", justifyContent: "center", margin: "0.5em",
                  backgroundColor: ["hsl(", ((nb_success / nb_tests) * 120).toString(10), ",80%,50%)"].join("")}}>
                 <div style={{display: "flex"}}>
-                    <div style={{flex: "2"}}>## Executions</div>
+                    <div style={{flex: "2"}}># Executions</div>
                     <div style={{flex: "1", fontWeight: "bolder"}}>{nb_tests}</div>
                 </div>
                 {nb_tests !== 0 ?
                     <div style={{display: "flex"}}>
-                        <div style={{flex: "2"}}>## Success</div>
+                        <div style={{flex: "2"}}># Success</div>
                         <div style={{flex: "1", fontWeight: "bolder"}}>{nb_success}</div>
                     </div>
                     : null
                 }
                 {nb_tests !== 0 ?
                     <div style={{display: "flex"}}>
-                        <div style={{flex: "2"}}>## Failures</div>
+                        <div style={{flex: "2"}}># Failures</div>
                         <div style={{flex: "1", fontWeight: "bolder"}}>{nb_failures}</div>
                     </div>
                     : null
