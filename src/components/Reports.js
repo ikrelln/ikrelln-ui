@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Loading } from './Loading';
 import { Link, Switch, Route } from 'react-router-dom';
-import { statusToColorSuffix } from '../helper';
+import { statusToColorSuffix, formatDuration } from '../helper';
 import Radium from 'radium';
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import dateFormat from 'dateformat';
@@ -91,10 +91,12 @@ class Report extends Component {
             current_hash: "",
             over_test: undefined,
             over_category: undefined,
+            full_categories: [],
         }
 
         this.mouseOverTest = this.mouseOverTest.bind(this);
         this.mouseLeaveTest = this.mouseLeaveTest.bind(this);
+        this.showFullCategory = this.showFullCategory.bind(this);
     }
 
     mouseOverTest(event, category, trace_id) {
@@ -108,6 +110,11 @@ class Report extends Component {
             over_test: undefined,
             over_category: undefined,
         })
+    }
+    showFullCategory(category) {
+        this.setState((prevState, props) => ({
+            full_categories: prevState.full_categories.concat([category])
+        }))
     }
 
     componentDidMount() {
@@ -149,11 +156,15 @@ class Report extends Component {
             );
         }
 
+        const tests_to_show = 150;
+
         return (
             <div>
                 <h2 style={{textTransform: "capitalize"}}>{this.props.report_name}</h2>
                 <div>
                     {Object.keys(this.props.report.categories).sort().map((cat, index) => {
+                        let tests = this.props.report.categories[cat];
+                        let showing = this.state.full_categories.includes(cat) ? tests : tests.slice(0, tests_to_show);
                         return (
                             <div key={cat} id={cat} style={{display: "flex", borderBottom: "1px solid gray", padding: "0.7em 0",
                                 backgroundColor: index % 2 === 1 ? "#F9F9F9" : "#FEFEFE", ':hover': {backgroundColor: "rgba(180, 180, 180, 0.2)"}}}>
@@ -161,7 +172,7 @@ class Report extends Component {
                                     <Link to={"/ikrelln/reports/" + this.props.report_name + "#" + cat} style={{textAlign: "left"}}>{cat}</Link>
                                 </div>
                                 <div style={{display: "flex", flex: "4", flexWrap: "wrap", justifyContent: "flex-start"}}>
-                                    {this.props.report.categories[cat].map(test =>
+                                    {showing.map(test =>
                                         <div id={"t-" + index + "-" + test.trace_id} key={test.trace_id}>
                                             <Link key={test.test_id} onMouseEnter={(event) => this.mouseOverTest(event, index, test.trace_id)} onMouseLeave={this.mouseLeaveTest}
                                                     className={"btn btn-sm btn" + statusToColorSuffix(test.status)}
@@ -177,16 +188,25 @@ class Report extends Component {
                                                 <PopoverBody>
                                                     <div>
                                                         {test.path.map(item => 
-                                                            <div key={item}>{item}</div>
+                                                            <div key={item}>> {item}</div>
                                                         )}
                                                         <div style={{fontSize: "smaller", fontStyle: "italic"}}>
                                                             {dateFormat(new Date(test.date / 1000), "isoDateTime")}
+                                                        </div>
+                                                        <div style={{fontSize: "smaller"}}>
+                                                            took {formatDuration(test.duration)}
                                                         </div>
                                                     </div>
                                                 </PopoverBody>
                                             </Popover>
                                         </div>
                                     )}
+                                    {!this.state.full_categories.includes(cat) && tests.length > tests_to_show
+                                        ? <div className="btn btn-sm btn-info" style={{margin: "0.3em"}} onClick={(event) => this.showFullCategory(cat)}>
+                                            and {tests.length - tests_to_show} more...
+                                        </div>
+                                        : null
+                                    }
                                 </div>
                             </div>
                         );
