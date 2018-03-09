@@ -8,7 +8,6 @@ const mapStateToProps = (state, props) => {
     return {
         reports: state.reports.report_list,
         report_details: state.reports.report_details,
-        environments: state.testResults.environments,
     }
 }
 
@@ -16,7 +15,6 @@ const mapDispatchToProps = dispatch => {
     return {
         fetchReports: () => dispatch(fetchReports()),
         fetchReport: (name, environment) => dispatch(fetchReport(name, environment)),
-        fetchEnvironments: () => dispatch(fetchEnvironments()),
     }
 }
 

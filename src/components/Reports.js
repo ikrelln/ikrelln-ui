@@ -11,31 +11,22 @@ export class Reports extends Component {
         super(props);
     
         this.state = {
-            environment: this.props.environments.length === 0 ? "" : this.props.environments[0]
+            environment: undefined,
         };
+
         this.handleEnvironmentChange = this.handleEnvironmentChange.bind(this);
     }
 
     handleEnvironmentChange(environment) {
-        this.setState({environment: environment.target.value});
+        this.setState({environment: environment});
     }
 
     componentDidMount() {
         if (this.props.reports === undefined) {
             this.props.fetchReports();
         }
-        if (this.props.environments.length === 0) {
-            this.props.fetchEnvironments();
-        }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if ((this.props.environments.length === 0) && (nextProps.environments.length !== 0)) {
-            this.setState({environment: nextProps.environments[0]});
-        }
-    }
-
-    
     render() {
         if (this.props.reports === undefined) {
             return (<Loading />);
@@ -46,15 +37,7 @@ export class Reports extends Component {
                 <Switch>
                     <Route path="/ikrelln/reports/:report_name" render={({match}) => 
                         <div>
-                                <div className="input-group" style={{margin: "0 1rem"}}>
-                                    <div className="input-group-prepend">
-                                        <label className="input-group-text">Environment</label>
-                                    </div>
-                                    <select className="custom-select" id="input-test-result-status-filter" onChange={this.handleEnvironmentChange} value={this.state.environment}>
-                                        {this.props.environments.map(env => <option key={env}>{env}</option>)}
-                                    </select>
-                                </div>
-                            <Report key={this.state.environment + "-" + match.params.report_name}
+                            <Report key={this.state.environment + "-" + match.params.report_name} handleEnvironmentChange={this.handleEnvironmentChange}
                                 environment={this.state.environment} report_name={match.params.report_name} fetchReport={this.props.fetchReport}
                                 report={this.props.report_details === undefined ? undefined : this.props.report_details[this.state.environment + "-" + match.params.report_name]} />
                         </div>
@@ -136,6 +119,11 @@ class Report extends Component {
     }
 
     componentDidUpdate() {
+        if (this.props.report !== undefined) {
+            if ((this.props.environment === undefined) || (!this.props.report.environments.includes(this.props.environment))) {
+                this.props.handleEnvironmentChange(this.props.report.environments[0]);
+            }
+        }
         const hash = window.location.hash;
         if ((!this.state.redirected) || ((hash !== "") && (this.state.current_hash !== hash))) {
             window.location.hash = "";
@@ -162,6 +150,15 @@ class Report extends Component {
             <div>
                 <h2 style={{textTransform: "capitalize"}}>{this.props.report_name}</h2>
                 <div>
+                    <div className="input-group" style={{margin: "1rem"}}>
+                        <div className="input-group-prepend">
+                            <label className="input-group-text">Environment</label>
+                        </div>
+                        <select disabled={this.props.report.environments.length < 2} className="custom-select" id="input-test-result-status-filter" onChange={(event) => this.props.handleEnvironmentChange(event.target.value)} value={this.props.environment}>
+                            {this.props.report.environments.map(env => <option key={env}>{env}</option>)}
+                        </select>
+                    </div>
+
                     {Object.keys(this.props.report.categories).sort().map((cat, index) => {
                         let tests = this.props.report.categories[cat];
                         let showing = this.state.full_categories.includes(cat) ? tests : tests.slice(0, tests_to_show);
