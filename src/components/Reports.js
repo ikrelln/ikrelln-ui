@@ -12,9 +12,11 @@ export class Reports extends Component {
     
         this.state = {
             environment: undefined,
+            group: undefined,
         };
 
         this.handleEnvironmentChange = this.handleEnvironmentChange.bind(this);
+        this.filterByGroup = this.filterByGroup.bind(this);
     }
 
     handleEnvironmentChange(environment) {
@@ -27,32 +29,58 @@ export class Reports extends Component {
         }
     }
 
+    filterByGroup(group) {
+        if (this.state.group !== group) {
+            this.setState({
+                group
+            });
+        } else {
+            this.setState({
+                group: undefined
+            });
+        }
+    }
+
     render() {
         if (this.props.reports === undefined) {
             return (<Loading />);
         }
+        const groups = [...new Set(this.props.reports.map(r => r.group))].sort();
 
         return (
             <div>
                 <Switch>
-                    <Route path="/ikrelln/reports/:report_name" render={({match}) => 
-                        <div>
-                            <Report key={this.state.environment + "-" + match.params.report_name} handleEnvironmentChange={this.handleEnvironmentChange}
-                                environment={this.state.environment} report_name={match.params.report_name} fetchReport={this.props.fetchReport}
-                                report={this.props.report_details === undefined ? undefined : this.props.report_details[this.state.environment + "-" + match.params.report_name]} />
+                    <Route path="/ikrelln/reports/:report_group/:report_name" render={({match}) => {
+                        const report_key = match.params.report_group + "-" + this.state.environment + "-" + match.params.report_name;
+                        return <div>
+                            <Report key={report_key} handleEnvironmentChange={this.handleEnvironmentChange} fetchReport={this.props.fetchReport}
+                                report_name={match.params.report_name} report_group={match.params.report_group} environment={this.state.environment}
+                                report={this.props.report_details === undefined ? undefined : this.props.report_details[report_key]} />
                         </div>
-                    } />
+                    }} />
                     <Route path="/ikrelln/reports" render={({match}) => {
                         return (
                             <div style={{display: "flex", flexDirection: "column"}}>
                                 <h1>Reports</h1>
+                                {groups.length > 1
+                                    ? <div key={this.state.group} style={{display: "flex", justifyContent: "center", padding: "0.5em 0"}}>
+                                        {groups.map(group => <div className={"btn btn-sm btn-" + (this.state.group === group ? "info" : "light")}
+                                            style={{textTransform: "capitalize", margin: "0 0.5em"}} key={group} onClick={() => this.filterByGroup(group)}>{group}</div>
+                                        )}
+                                    </div>
+                                    : null
+                                }
                                 <div style={{display: "flex", flexWrap: "wrap"}}>
-                                    {this.props.reports.map(report => 
-                                        <Link key={report.name} to={"/ikrelln/reports/" + report.name} 
+                                    {this.props.reports.filter(report => {
+                                        if (this.state.group === undefined)
+                                            return true;
+                                        return report.group === this.state.group;
+                                    }).map(report => 
+                                        <Link key={report.name} to={"/ikrelln/reports/" + report.group + "/" + report.name} 
                                             style={{flex: "1", margin: "0.5em", padding: "0.5em", minWidth: "15em", minHeight: "7em",
                                                 display: "flex", flexDirection: "column", border: "1px dashed grey", borderRadius: "10px", justifyContent: "center"}}>
                                                 <div style={{flex: "2", display: "flex", flexDirection: "column", justifyContent: "center"}}>
-                                                    <div style={{textTransform: "capitalize"}}>{report.name}</div>
+                                                    <div style={{textTransform: "capitalize"}}>{report.group} - {report.name}</div>
                                                     <div style={{fontSize: "xx-small", fontStyle: "italic"}}>{report.last_update}</div>
                                                 </div>
                                             <div style={{display: "flex", fontSize: "smaller"}}>
@@ -109,7 +137,7 @@ class Report extends Component {
 
     componentDidMount() {
         if (this.props.report === undefined) {
-            this.props.fetchReport(this.props.report_name, this.props.environment);
+            this.props.fetchReport(this.props.report_group, this.props.report_name, this.props.environment);
         } else {
             const hash = window.location.hash;
             if ((!this.state.redirected) || ((hash !== "") && (this.state.current_hash !== hash))) {
@@ -155,7 +183,7 @@ class Report extends Component {
 
         return (
             <div>
-                <h2 style={{textTransform: "capitalize"}}>{this.props.report_name}</h2>
+                <h2 style={{textTransform: "capitalize"}}>{this.props.report_group} - {this.props.report_name}</h2>
                 <div>
                     <div className="input-group" style={{margin: "1rem"}}>
                         <div className="input-group-prepend">
@@ -186,23 +214,26 @@ class Report extends Component {
                                                         : <div style={{width: "1em"}}>&nbsp;</div>
                                                     }
                                             </Link>
-                                            <Popover placement="left" isOpen={(this.state.over_test === test.trace_id) && (this.state.over_category === index)} 
-                                                target={"#t-" + index + "-" + test.trace_id} toggle={this.toggle}>
-                                                <PopoverHeader>{test.name}</PopoverHeader>
-                                                <PopoverBody>
-                                                    <div>
-                                                        {test.path.map(item => 
-                                                            <div key={item}>> {item}</div>
-                                                        )}
-                                                        <div style={{fontSize: "smaller", fontStyle: "italic"}}>
-                                                            {dateFormat(new Date(test.date / 1000), "isoDateTime")}
+                                            { (this.state.over_test === test.trace_id) && (this.state.over_category === index) ? 
+                                                <Popover placement="left" isOpen={(this.state.over_test === test.trace_id) && (this.state.over_category === index)} 
+                                                    target={"#t-" + index + "-" + test.trace_id} toggle={this.toggle}>
+                                                    <PopoverHeader>{test.name}</PopoverHeader>
+                                                    <PopoverBody>
+                                                        <div>
+                                                            {test.path.map(item => 
+                                                                <div key={item}>> {item}</div>
+                                                            )}
+                                                            <div style={{fontSize: "smaller", fontStyle: "italic"}}>
+                                                                {dateFormat(new Date(test.date / 1000), "isoDateTime")}
+                                                            </div>
+                                                            <div style={{fontSize: "smaller"}}>
+                                                                took {formatDuration(test.duration)}
+                                                            </div>
                                                         </div>
-                                                        <div style={{fontSize: "smaller"}}>
-                                                            took {formatDuration(test.duration)}
-                                                        </div>
-                                                    </div>
-                                                </PopoverBody>
-                                            </Popover>
+                                                    </PopoverBody>
+                                                </Popover>
+                                                : null
+                                            }
                                         </div>
                                     )}
                                     {!this.state.full_categories.includes(cat) && tests.length > tests_to_show

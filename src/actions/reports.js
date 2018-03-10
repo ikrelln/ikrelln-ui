@@ -34,13 +34,13 @@ function receiveReport(json, environment) {
         environment
     }
 }
-export function fetchReport(name, environment) {
+export function fetchReport(group, name, environment) {
     var env_filter = "";
     if (environment !== "")
         env_filter = "?environment=" + environment;
     return dispatch => {
         dispatch(requestReport())
-        return fetch('/api/v1/reports/' + name + env_filter)
+        return fetch('/api/v1/reports/' + group + '/' + name + env_filter)
             .then(response => response.json())
             .then(json => dispatch(receiveReport(json, environment)))
     }

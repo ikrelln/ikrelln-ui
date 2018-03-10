@@ -14,7 +14,7 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = dispatch => {
     return {
         fetchReports: () => dispatch(fetchReports()),
-        fetchReport: (name, environment) => dispatch(fetchReport(name, environment)),
+        fetchReport: (group, name, environment) => dispatch(fetchReport(group, name, environment)),
     }
 }
 
