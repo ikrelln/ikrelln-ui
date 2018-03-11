@@ -18,7 +18,7 @@ let store = createStore(iKrelln, applyMiddleware(
     thunkMiddleware)
 )
 
-store.dispatch(fetchTestComponent());
+//store.dispatch(fetchTestComponent());
 store.dispatch(fetchResultComponent());
 
 ReactDOM.render(
