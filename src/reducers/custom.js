@@ -1,7 +1,7 @@
-import { RECEIVE_TEST_COMPONENT, RECEIVE_RESULT_COMPONENT } from "../actions/custom";
+import { RECEIVE_TEST_COMPONENT, RECEIVE_RESULT_COMPONENT, RECEIVE_SCRIPTS } from "../actions/custom";
 
 
-const custom = (state = { test_component: undefined, result_component: undefined }, action) => {
+const custom = (state = { test_component: undefined, result_component: undefined, scripts: [] }, action) => {
     switch (action.type) {
         case RECEIVE_TEST_COMPONENT:
             if (action.script === undefined) {
@@ -24,6 +24,10 @@ const custom = (state = { test_component: undefined, result_component: undefined
                         __html: action.script(result, spans),
                     };
                 },
+            })
+        case RECEIVE_SCRIPTS:
+            return Object.assign({}, state, {
+                scripts: action.scripts
             })
         default:
             return state

@@ -5,6 +5,7 @@ import TestResults from './containers/TestResults';
 import TestDetails from './containers/TestDetails';
 import TraceRedirect from './containers/TraceRedirect';
 import Reports from './containers/Reports';
+import Setup from './containers/Setup';
 
 class App extends Component {
   render() {
@@ -44,7 +45,7 @@ class App extends Component {
             }} />
             <Route path="/ikrelln/results" component={TestResults} />
             <Route path="/ikrelln/reports" component={Reports} />
-            <Route path="/ikrelln/setup" render={() => <h1>Setup</h1>} />
+            <Route path="/ikrelln/setup" component={Setup} />
             <Route render={() => <Redirect to="/ikrelln/results" />} />
           </Switch>
         </div>
