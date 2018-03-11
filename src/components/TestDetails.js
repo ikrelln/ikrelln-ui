@@ -30,24 +30,22 @@ export class TestDetails extends Component {
 
         return (
             <div>
-                <nav aria-label="breadcrumb">
-                    <ol className="breadcrumb">
-                        <li className="breadcrumb-item">
-                            <div style={{display: "flex"}}>
-                                <div style={{paddingRight: "1rem"}}>
-                                    <i className="fas fa-map-marker-alt" style={{color: "gray"}}></i>
-                                </div>
-                                <Link to={"/ikrelln/tests/root"}>root</Link>
+                <ol className="breadcrumb">
+                    <li className="breadcrumb-item">
+                        <div style={{display: "flex"}}>
+                            <div style={{paddingRight: "1rem"}}>
+                                <i className="fas fa-map-marker-alt" style={{color: "gray"}}></i>
                             </div>
+                            <Link to={"/ikrelln/tests/root"}>root</Link>
+                        </div>
+                    </li>
+                    {this.props.test.path.map(item => (
+                        <li className="breadcrumb-item" key={item.id}>
+                            <Link to={"/ikrelln/tests/" + item.id}>{item.name}</Link>
                         </li>
-                        {this.props.test.path.map(item => (
-                            <li className="breadcrumb-item" key={item.id}>
-                                <Link to={"/ikrelln/tests/" + item.id}>{item.name}</Link>
-                            </li>
-                        ))}
-                        <li className="breadcrumb-item active">{this.props.test.name}</li>
-                    </ol>
-                </nav>
+                    ))}
+                    <li className="breadcrumb-item active">{this.props.test.name}</li>
+                </ol>
                 <ShortHistory results={this.props.test.last_results} />
                 {this.props.custom_component === undefined
                     ? null

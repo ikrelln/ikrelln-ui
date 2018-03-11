@@ -220,9 +220,11 @@ class Report extends Component {
                                                     <PopoverHeader>{test.name}</PopoverHeader>
                                                     <PopoverBody>
                                                         <div>
-                                                            {test.path.map(item => 
-                                                                <div key={item}>> {item}</div>
-                                                            )}
+                                                            <ol className="breadcrumb" style={{padding: "0", backgroundColor: "inherit"}}>
+                                                                {test.path.map(item => 
+                                                                    <li className="breadcrumb-item" key={item}>{item}</li>
+                                                                )}
+                                                            </ol>
                                                             <div style={{fontSize: "smaller", fontStyle: "italic"}}>
                                                                 {dateFormat(new Date(test.date / 1000), "isoDateTime")}
                                                             </div>
