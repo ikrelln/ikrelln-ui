@@ -79,14 +79,14 @@ export class Reports extends Component {
                                         <Link key={report.name} to={"/ikrelln/reports/" + report.group + "/" + report.name} 
                                             style={{flex: "1", margin: "0.5em", padding: "0.5em", minWidth: "15em", minHeight: "7em",
                                                 display: "flex", flexDirection: "column", border: "1px dashed grey", borderRadius: "10px", justifyContent: "center"}}>
-                                                <div style={{flex: "2", display: "flex", flexDirection: "column", justifyContent: "center"}}>
-                                                    <div style={{textTransform: "capitalize"}}>{report.group} - {report.name}</div>
-                                                    <div style={{fontSize: "xx-small", fontStyle: "italic"}}>{report.last_update}</div>
-                                                </div>
-                                            <div style={{display: "flex", fontSize: "smaller"}}>
-                                            {Object.keys(report.summary).sort().map(key => 
-                                                <div className={"btn" + statusToColorSuffix(key)} key={key} style={{flex: report.summary[key]}}>{report.summary[key] !== 0 ? report.summary[key] : null}</div>
-                                            )}
+                                            <div style={{flex: "2", display: "flex", flexDirection: "column", justifyContent: "center"}}>
+                                                <div style={{textTransform: "capitalize"}}>{report.group} - {report.name}</div>
+                                                <div style={{fontSize: "xx-small", fontStyle: "italic"}}>{report.last_update}</div>
+                                            </div>
+                                            <div className="progress">
+                                                {Object.keys(report.summary).sort().map(key => 
+                                                    <div className={"progress-bar bg" + statusToColorSuffix(key)} key={key} style={{flex: report.summary[key]}}>{report.summary[key] !== 0 ? report.summary[key] : null}</div>
+                                                )}
                                             </div>
                                         </Link>
                                     )}
