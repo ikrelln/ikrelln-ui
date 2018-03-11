@@ -12,7 +12,7 @@ export class Reports extends Component {
     
         this.state = {
             environment: undefined,
-            group: undefined,
+            group: window.location.hash === "" ? undefined : window.location.hash.substr(1),
         };
 
         this.handleEnvironmentChange = this.handleEnvironmentChange.bind(this);
@@ -31,13 +31,23 @@ export class Reports extends Component {
 
     filterByGroup(group) {
         if (this.state.group !== group) {
+            window.location.hash = group;
             this.setState({
                 group
             });
         } else {
+            window.location.hash = "";
             this.setState({
                 group: undefined
             });
+        }
+    }
+
+    componentWillReceiveProps() {
+        if (window.location.hash === "") {
+            this.setState({
+                group: undefined
+            });            
         }
     }
 
