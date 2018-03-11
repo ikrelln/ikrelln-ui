@@ -205,12 +205,12 @@ class Report extends Component {
 
                     {Object.keys(this.props.report.categories).sort().map((cat, index) => {
                         let tests = this.props.report.categories[cat];
-                        let showing = this.state.full_categories.includes(cat) ? tests : tests.slice(0, tests_to_show);
+                        let showing = this.state.full_categories.includes(cat) ? tests : tests.slice(0, tests_to_show);                        
                         return (
                             <div key={cat} id={cat} style={{display: "flex", borderBottom: "1px solid gray", padding: "0.7em 0",
-                                backgroundColor: index % 2 === 1 ? "#F9F9F9" : "#FEFEFE", ':hover': {backgroundColor: "rgba(180, 180, 180, 0.2)"}}}>
+                                backgroundColor: this.state.current_hash.substr(1) === cat ? "#E8E8E8" : (index % 2 === 1 ? "#F9F9F9" : "#FEFEFE"), ':hover': {backgroundColor: "rgba(180, 180, 180, 0.2)"}}}>
                                 <div style={{fontWeight: "bolder", flex: "1", minWidth: "400px", maxWidth: "400px", display: "flex", alignItems: "center"}}>
-                                    <Link to={"/ikrelln/reports/" + this.props.report_name + "#" + cat} style={{textAlign: "left"}}>{cat}</Link>
+                                    <Link to={"/ikrelln/reports/" + this.props.report_group + "/" + this.props.report_name + "#" + cat} style={{textAlign: "left"}}>{cat}</Link>
                                 </div>
                                 <div style={{display: "flex", flex: "4", flexWrap: "wrap", justifyContent: "flex-start"}}>
                                     {showing.map(test =>
