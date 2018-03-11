@@ -79,13 +79,13 @@ export class Reports extends Component {
                                     </div>
                                     : null
                                 }
-                                <div style={{display: "flex", flexWrap: "wrap"}}>
+                                <div style={{display: "flex", flexWrap: "wrap"}} key={this.state.group + "-all"}>
                                     {this.props.reports.filter(report => {
                                         if (this.state.group === undefined)
                                             return true;
                                         return report.group === this.state.group;
                                     }).map(report => 
-                                        <Link key={report.name} to={"/ikrelln/reports/" + report.group + "/" + report.name} 
+                                        <Link key={report.group + "-" + report.name} to={"/ikrelln/reports/" + report.group + "/" + report.name} 
                                             style={{flex: "1", margin: "0.5em", padding: "0.5em", minWidth: "15em", minHeight: "7em",
                                                 display: "flex", flexDirection: "column", border: "1px dashed grey", borderRadius: "10px", justifyContent: "center"}}>
                                             <div style={{flex: "2", display: "flex", flexDirection: "column", justifyContent: "center"}}>

@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 import { Reports as component } from '../components/Reports';
 import { fetchReports, fetchReport } from '../actions/reports';
-import { fetchEnvironments } from '../actions/testResults';
 
 
 const mapStateToProps = (state, props) => {
