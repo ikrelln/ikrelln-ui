@@ -61,10 +61,9 @@ export class Reports extends Component {
                     <Route path="/ikrelln/reports" render={({match}) => {
                         return (
                             <div style={{display: "flex", flexDirection: "column"}}>
-                                <h1>Reports</h1>
                                 {groups.length > 1
                                     ? <div key={this.state.group} style={{display: "flex", justifyContent: "center", padding: "0.5em 0"}}>
-                                        {groups.map(group => <div className={"btn btn-sm btn-" + (this.state.group === group ? "info" : "light")}
+                                        {groups.map(group => <div className={"btn btn-sm btn-" + (this.state.group === group ? "info" : this.state.group === undefined ? "primary" : "light")}
                                             style={{textTransform: "capitalize", margin: "0 0.5em"}} key={group} onClick={() => this.filterByGroup(group)}>{group}</div>
                                         )}
                                     </div>
