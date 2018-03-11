@@ -10,10 +10,14 @@ export class Loading extends Component {
     }
 
     componentDidMount() {
-        setTimeout(
+        this.timeout_id = setTimeout(
             () => this.setState({overDelay: true}),
             3000
         );
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timeout_id);
     }
 
     render() {
