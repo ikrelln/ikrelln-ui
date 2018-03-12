@@ -84,13 +84,13 @@ class Script extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.script === undefined) {
-            this.state = {
+            this.setState = ({
                 edit: true,
                 name: "",
                 source: "",
                 status: "Enabled",
                 text_area_length: 7,
-            };
+            });
         } else {
             const matches_newlines = nextProps.script.source.match(/\n/g);
             this.setState({
