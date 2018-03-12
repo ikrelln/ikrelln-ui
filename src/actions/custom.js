@@ -6,10 +6,14 @@ function requestTestComponent() {
 }
 export const RECEIVE_TEST_COMPONENT = 'RECEIVE_TEST_COMPONENT'
 function receiveTestComponent(json) {
+    let component_func = () => {};
+    try {
+        // eslint-disable-next-line
+        component_func = eval(json.source);
+    } catch (e) { }
     return {
         type: RECEIVE_TEST_COMPONENT,
-        // eslint-disable-next-line
-        script: eval(json.source)
+        script: component_func,
     }
 }
 export function fetchTestComponent() {
