@@ -32,7 +32,7 @@ export class Setup extends Component {
                 <Switch>
                     <Route path="/ikrelln/setup/uimod" render={({match}) => {
                         if (ui_test_script === undefined)
-                            return <div style={{textAlign: "left"}}><Script type="UITestResult" language="javascript"/></div>
+                            return <div style={{textAlign: "left"}}><Script type="UITestResult" language="javascript" saveScript={this.props.saveScript}/></div>
                         return <div style={{textAlign: "left"}}><Script style={{textAlign: "left"}} script={ui_test_script} language="javascript"
                             deleteScript={() => this.props.deleteScript('UITestResult')} saveScript={this.props.updateScript}/></div>;
                     }} />
@@ -62,14 +62,15 @@ class Script extends Component {
                 source: "",
                 status: "Enabled",
                 text_area_length: 7,
-            };                
+            };
         } else {
+            const matches_newlines = props.script.source.match(/\n/g);
             this.state = {
                 edit: false,
                 name: props.script.name,
                 source: props.script.source,
                 status: props.script.status,
-                text_area_length: props.script.source.match(/\n/g).length + 1,
+                text_area_length: matches_newlines === null ? 2 : (matches_newlines.length + 1),
             };
         }
 
@@ -82,13 +83,22 @@ class Script extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.script !== undefined) {
+        if (nextProps.script === undefined) {
+            this.state = {
+                edit: true,
+                name: "",
+                source: "",
+                status: "Enabled",
+                text_area_length: 7,
+            };
+        } else {
+            const matches_newlines = nextProps.script.source.match(/\n/g);
             this.setState({
                 edit: false,
                 name: nextProps.script.name,
                 source: nextProps.script.source,
                 status: nextProps.script.status,
-                text_area_length: nextProps.script.source.match(/\n/g).length + 1,
+                text_area_length: matches_newlines === null ? 2 : (matches_newlines.length + 1),
             });
         }
     }
