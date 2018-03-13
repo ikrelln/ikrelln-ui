@@ -51,11 +51,25 @@ export class Reports extends Component {
         }
     }
 
+    dateToPeriod(date) {
+        const hours = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000 / 60 / 60 / 24);
+        if (hours === 0) {
+            return "Less than 24 hours ago";
+        } else if (hours === 1) {
+            return "1 day ago";
+        } else {
+            return hours + " days ago";
+        }
+
+    }
+
     render() {
         if (this.props.reports === undefined) {
             return (<Loading />);
         }
         const groups = [...new Set(this.props.reports.map(r => r.group))].sort();
+
+        let current_period = "";
 
         return (
             <div>
@@ -85,19 +99,32 @@ export class Reports extends Component {
                                             return true;
                                         return report.group === this.state.group;
                                     }).map(report => 
-                                        <Link key={report.group + "-" + report.name} to={"/ikrelln/reports/" + report.group + "/" + report.name} 
-                                            style={{flex: "1", margin: "0.5em", padding: "0.5em", minWidth: "15em", minHeight: "7em",
-                                                display: "flex", flexDirection: "column", border: "1px dashed grey", borderRadius: "10px", justifyContent: "center"}}>
-                                            <div style={{flex: "2", display: "flex", flexDirection: "column", justifyContent: "center"}}>
-                                                <div style={{textTransform: "capitalize"}}>{report.group} - {report.name}</div>
-                                                <div style={{fontSize: "xx-small", fontStyle: "italic"}}>{report.last_update}</div>
-                                            </div>
-                                            <div className="progress">
-                                                {Object.keys(report.summary).sort().map(key => 
-                                                    <div className={"progress-bar bg" + statusToColorSuffix(key)} key={key} style={{flex: report.summary[key]}}>{report.summary[key] !== 0 ? report.summary[key] : null}</div>
-                                                )}
-                                            </div>
-                                        </Link>
+                                        {
+                                            let display_category = false;
+                                            const period = this.dateToPeriod(report.last_update);
+                                            if (current_period != period) {
+                                                display_category = true;
+                                                current_period =period
+                                            }
+                                            return (
+                                                <React.Fragment key={"frag" + report.group + "-" + report.name}>
+                                                    {display_category ? <div key={period} className="alert alert-info" style={{flex: "0 1 100%", margin: "0.2em 0", padding: "0.2em 0"}}>{period}</div> : null}
+                                                    <Link key={report.group + "-" + report.name} to={"/ikrelln/reports/" + report.group + "/" + report.name} 
+                                                        style={{flex: "1", margin: "0.5em", padding: "0.5em", minWidth: "15em", minHeight: "7em",
+                                                            display: "flex", flexDirection: "column", border: "1px dashed grey", borderRadius: "10px", justifyContent: "center"}}>
+                                                        <div style={{flex: "2", display: "flex", flexDirection: "column", justifyContent: "center"}}>
+                                                            <div style={{textTransform: "capitalize"}}>{report.group} - {report.name}</div>
+                                                            <div style={{fontSize: "xx-small", fontStyle: "italic"}}>{report.last_update}</div>
+                                                        </div>
+                                                        <div className="progress">
+                                                            {Object.keys(report.summary).sort().map(key => 
+                                                                <div className={"progress-bar bg" + statusToColorSuffix(key)} key={key} style={{flex: report.summary[key]}}>{report.summary[key] !== 0 ? report.summary[key] : null}</div>
+                                                            )}
+                                                        </div>
+                                                    </Link>
+                                                </React.Fragment>   
+                                            )
+                                        }
                                     )}
                                 </div>
                             </div>
