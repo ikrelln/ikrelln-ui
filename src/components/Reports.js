@@ -114,7 +114,7 @@ class Report extends Component {
         super(props);
     
         this.state = {
-            redirected: false,
+            redirected: window.location.hash === "",
             current_hash: "",
             over_test: undefined,
             over_category: undefined,
@@ -150,9 +150,9 @@ class Report extends Component {
         } else {
             const hash = window.location.hash;
             if ((!this.state.redirected) || ((hash !== "") && (this.state.current_hash !== hash))) {
-                window.location.hash = "";
+                window.history.replaceState({}, "i'Krelln", window.location.href.split("#")[0])
                 setTimeout(function(){ 
-                    window.location.hash = hash;
+                    window.history.replaceState({}, "i'Krelln", window.location.href.split("#")[0] + hash)
                  }, 300);
                  this.setState({
                     redirected: true,
@@ -170,9 +170,9 @@ class Report extends Component {
         }
         const hash = window.location.hash;
         if ((!this.state.redirected) || ((hash !== "") && (this.state.current_hash !== hash))) {
-            window.location.hash = "";
+            window.history.replaceState({}, "i'Krelln", window.location.href.split("#")[0])
             setTimeout(function(){ 
-                window.location.hash = hash;
+                window.history.replaceState({}, "i'Krelln", window.location.href.split("#")[0] + hash)
              }, 300);
             this.setState({
                 redirected: true,
