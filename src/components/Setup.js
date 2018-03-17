@@ -84,7 +84,7 @@ class Script extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.script === undefined) {
-            this.setState = ({
+            this.setState({
                 edit: true,
                 name: "",
                 source: "",
