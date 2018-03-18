@@ -102,9 +102,9 @@ export class Reports extends Component {
                                         {
                                             let display_category = false;
                                             const period = this.dateToPeriod(report.last_update);
-                                            if (current_period != period) {
+                                            if (current_period !== period) {
                                                 display_category = true;
-                                                current_period =period
+                                                current_period = period
                                             }
                                             return (
                                                 <React.Fragment key={"frag" + report.group + "-" + report.name}>
