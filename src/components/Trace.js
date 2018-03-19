@@ -133,7 +133,8 @@ export class Trace extends Component {
                                 traceDuration={this.props.spans.spans[0].duration} nb_time_separation={nb_time_separation}
                                 hideChildren={() => this.hideSpanChildren(span.id)} showChildren={() => this.showSpanChildren(span.id)}
                                 isHidden={this.state.hidden_span_children.includes(span.id)}
-                                hasChildren={this.props.spans.spans.filter(other_span => other_span.parentId ===span.id).length > 0} />
+                                hasChildren={this.props.spans.spans.filter(other_span => other_span.parentId ===span.id).length > 0}
+                                notice={this.props.notice !== undefined ? this.props.notice.includes(span.id) : false} />
                         ))}
                     </div>
                 }
@@ -168,8 +169,13 @@ class Span extends Component {
 
         let left = (this.props.span.timestamp - this.props.traceStartTs) / this.props.traceDuration * 100;
         let width = Math.max(this.props.span.duration / this.props.traceDuration * 100, 0.2);
-        let selected_span = this.state.modal ? {border: "1px solid blue"} : {};
-        let error_span = this.props.span.tags["error"] ? {backgroundColor: "rgba(211, 18, 18, 0.3)"} : {backgroundColor: "rgba(30, 129, 196, 0.3)"};
+        let border = this.state.modal ? {border: "1px solid blue"} : {};
+        let background = this.props.span.tags["error"] ? {backgroundColor: "rgba(211, 18, 18, 0.3)"} : {backgroundColor: "rgba(30, 129, 196, 0.3)"};
+        if (this.props.notice) {
+            background = {background: "repeating-linear-gradient(-45deg, rgba(211, 18, 18, 0.3), rgba(211, 18, 18, 0.3) 10px, rgba(30, 129, 196, 0.3) 10px, rgba(30, 129, 196, 0.3) 20px)"};
+            border = {border: "1px dashed #dc3545"}
+        }
+
         return (
             <div style={{position: "relative", ':hover': {backgroundColor: "rgba(200, 200, 200, 0.2)"}}} onClick={this.toggleTags}>
                 <div style={{display: "flex", justifyContent: "space-evenly", position: "absolute", width: "100%", paddingTop: "5px"}}>
@@ -179,7 +185,7 @@ class Span extends Component {
                 </div>
                 <div key={children_toggle_class} style={{left: left.toFixed(1) + "%", width: width.toFixed(1) + "%",
                             position: "relative", whiteSpace: "nowrap", margin: "1px", padding: "2px",
-                            display: "flex", alignItems: "center", ...selected_span, ...error_span}}>
+                            display: "flex", alignItems: "center", ...border, ...background}}>
                     {this.props.hasChildren ?
                         <div style={{paddingRight: "0.3em"}} onClick={(event) => {
                             this.toggleChildren();
