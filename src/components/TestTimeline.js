@@ -23,8 +23,9 @@ export class TestTimeline extends Component {
         if (this.props.main_result === undefined)
             return <Loading />
 
-        const startTime = this.props.main_result.date;
-        const endTime = this.props.main_result.date + (this.props.main_result.duration);
+        const delta = this.props.main_result.duration * 0.25;
+        const startTime = this.props.main_result.date - delta;
+        const endTime = this.props.main_result.date + this.props.main_result.duration + delta;
 
         return (
             <div>
