@@ -46,3 +46,13 @@ export const sortBykey = (key) => (a, b) => {
         return 0;
     return -1;
 };
+
+export function randomId(length = 10) {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  
+    for (var i = 0; i < length; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+  
+    return text;
+  }

@@ -8,6 +8,7 @@ import dateFormat from 'dateformat';
 import TestTimeline from '../containers/TestTimeline';
 import Radium from 'radium';
 import TestTrends from '../containers/TestTrends';
+import { ScrollSync } from 'react-scroll-sync';
 
 export class TestDetails extends Component {
     componentDidMount() {
@@ -129,7 +130,7 @@ export class TestDetails extends Component {
                         } else {
                             trace_id = match.params.trace_id;
                         }
-                        return (<Trace key={trace_id} trace_id={trace_id} />)
+                        return (<ScrollSync><Trace key={trace_id} trace_id={trace_id} /></ScrollSync>)
                     }} />
                     <Route path="/ikrelln/tests/:test_id/results" render={() => {
                         return <TestResults key={this.props.test.test_id} test_id_filter={this.props.test.test_id}
