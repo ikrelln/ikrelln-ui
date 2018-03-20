@@ -289,15 +289,67 @@ export class TraceComparator extends Component {
             return (<Loading />);
         }
 
+        const spansBaseTopLevel = this.props.spansBase.spans.filter(span => span.parentId === this.props.spansBase.trace_id);
+        const spansWithTopLevel = this.props.spansWith.spans.filter(span => span.parentId === this.props.spansWith.trace_id);
+
+        var notice_base = [];
+        var notice_with = [];
+        var i_base = 0;
+        var i_with = 0;
+        while (i_base < spansBaseTopLevel.length) {
+            var i_with_current = i_with;
+            while (i_with_current < spansWithTopLevel.length) {
+                if (spansBaseTopLevel[i_base].name === spansWithTopLevel[i_with_current].name) {
+                    break;
+                }
+                i_with_current += 1;
+            }
+            if (i_with_current === spansWithTopLevel.length) {
+                notice_base.push(spansBaseTopLevel[i_base].id)
+            } else {
+                while (i_with + 1 < i_with_current) {
+                    notice_with.push(spansWithTopLevel[i_with].id);
+                    i_with += 1;
+                }
+                if (!Object.equals(spansBaseTopLevel[i_base].tags, spansWithTopLevel[i_with].tags)) {
+                    notice_base.push(spansBaseTopLevel[i_base].id)
+                    notice_with.push(spansWithTopLevel[i_with].id)
+                }
+                i_with += 1;
+            }
+            i_base += 1;
+        }
+
         return (
             <div style={{display: "flex"}}>
                 <div style={{width: "50%", paddingRight: "5px"}}>
-                    <Trace key={this.props.base} trace_id={this.props.base} spans={this.props.spansBase} result={this.props.testResultBase} />
+                    <Trace key={this.props.base} trace_id={this.props.base} spans={this.props.spansBase} result={this.props.testResultBase} notice={notice_base} />
                 </div>
                 <div style={{width: "50%", paddingLeft: "5px"}}>
-                    <Trace key={this.props.with} trace_id={this.props.with} spans={this.props.spansWith} result={this.props.testResultWith} />
+                    <Trace key={this.props.with} trace_id={this.props.with} spans={this.props.spansWith} result={this.props.testResultWith} notice={notice_with}/>
                 </div>
                 </div>
         );
     }
 }
+
+Object.equals = function( x, y ) {
+    if ( x === y ) return true;
+    if ( ! ( x instanceof Object ) || ! ( y instanceof Object ) ) return false;
+    if ( x.constructor !== y.constructor ) return false;
+
+    for ( var p in x ) {
+      if ( ! x.hasOwnProperty( p ) ) continue;  
+      if ( ! y.hasOwnProperty( p ) ) return false;
+      if ( x[ p ] === y[ p ] ) continue;
+      if ( typeof( x[ p ] ) !== "object" ) return false;
+      if ( ! Object.equals( x[ p ],  y[ p ] ) ) return false;
+    }
+  
+    for ( p in y ) {
+      if ( y.hasOwnProperty( p ) && ! x.hasOwnProperty( p ) ) return false;
+    }
+
+    return true;
+  }
+  
