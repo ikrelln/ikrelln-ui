@@ -146,11 +146,37 @@ class Report extends Component {
             over_test: undefined,
             over_category: undefined,
             full_categories: [],
+            filter: {
+                status: "Any",
+                name: "",
+            }
         }
 
         this.mouseOverTest = this.mouseOverTest.bind(this);
         this.mouseLeaveTest = this.mouseLeaveTest.bind(this);
         this.showFullCategory = this.showFullCategory.bind(this);
+        this.handleStatusChange = this.handleStatusChange.bind(this);
+        this.handleNameChange = this.handleNameChange.bind(this);
+    }
+
+    handleStatusChange(event) {
+        let new_value = event.target.value;
+        this.setState((prevState, props) => ({
+            filter: {
+                status: new_value,
+                name: prevState.filter.name,
+            }
+        }));
+    }
+
+    handleNameChange(event) {
+        let new_value = event.target.value;
+        this.setState((prevState, props) => ({
+            filter: {
+                status: prevState.filter.status,
+                name: new_value,
+            }
+        }));
     }
 
     mouseOverTest(event, category, trace_id) {
@@ -221,17 +247,47 @@ class Report extends Component {
             <div>
                 <h2 style={{textTransform: "capitalize"}}>{this.props.report_group} - {this.props.report_name}</h2>
                 <div>
-                    <div className="input-group" style={{margin: "1rem"}}>
-                        <div className="input-group-prepend">
-                            <label className="input-group-text">Environment</label>
+                    <div style={{display: "flex"}}>
+                        <div className="input-group" style={{margin: "0 1rem"}}>
+                            <div className="input-group-prepend">
+                                <label className="input-group-text">By Status</label>
+                            </div>
+                            <select className="custom-select" id="input-test-result-status-filter" onChange={this.handleStatusChange} value={this.state.filter.status}>
+                                <option>Any</option>
+                                <option>Success</option>
+                                <option>Failure</option>
+                                <option>Skipped</option>
+                            </select>
                         </div>
-                        <select disabled={this.props.report.environments.length < 2} className="custom-select" id="input-test-result-status-filter" onChange={(event) => this.props.handleEnvironmentChange(event.target.value)} value={this.props.environment}>
-                            {this.props.report.environments.map(env => <option key={env}>{env}</option>)}
-                        </select>
+                        <div className="input-group" style={{margin: "0 1rem"}}>
+                            <div className="input-group-prepend">
+                                <label className="input-group-text">Environment</label>
+                            </div>
+                            <select disabled={this.props.report.environments.length < 2} className="custom-select" id="input-test-result-status-filter" onChange={(event) => this.props.handleEnvironmentChange(event.target.value)} value={this.props.environment}>
+                                {this.props.report.environments.map(env => <option key={env}>{env}</option>)}
+                            </select>
+                        </div>
+                        <div className="input-group" style={{margin: "0 1rem"}}>
+                            <div className="input-group-prepend">
+                                <label className="input-group-text">By Name</label>
+                            </div>
+                            <input type="text" className="form-control" value={this.state.filter.name} onChange={this.handleNameChange}/>
+                        </div>
                     </div>
 
+
                     {Object.keys(this.props.report.categories).sort().map((cat, index) => {
-                        let tests = this.props.report.categories[cat];
+                        let tests = this.props.report.categories[cat].filter(tr => {
+                            if ((this.state.filter.status === undefined) || (this.state.filter.status === "Any"))
+                                return true;
+                            return (this.state.filter.status === tr.status);
+                        }).filter(tr => {
+                            if ((tr.path.filter(parent =>
+                                parent.toLowerCase().includes(this.state.filter.name.toLowerCase())
+                            )).length > 0)
+                                return true;
+                            return tr.name.toLowerCase().includes(this.state.filter.name.toLowerCase());
+                        });
                         let showing = this.state.full_categories.includes(cat) ? tests : tests.slice(0, tests_to_show);                        
                         return (
                             <div key={cat} id={cat} style={{display: "flex", borderBottom: "1px solid gray", padding: "0.7em 0",
