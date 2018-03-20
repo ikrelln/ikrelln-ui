@@ -172,8 +172,10 @@ class Span extends Component {
         let border = this.state.modal ? {border: "1px solid blue"} : {};
         let background = this.props.span.tags["error"] ? {backgroundColor: "rgba(211, 18, 18, 0.3)"} : {backgroundColor: "rgba(30, 129, 196, 0.3)"};
         if (this.props.notice) {
-            background = {background: "repeating-linear-gradient(-45deg, rgba(211, 18, 18, 0.3), rgba(211, 18, 18, 0.3) 10px, rgba(30, 129, 196, 0.3) 10px, rgba(30, 129, 196, 0.3) 20px)"};
-            border = {border: "1px dashed #dc3545"}
+            const diag_color = "rgba(234, 247, 36, 0.3)";
+            const back_color = background.backgroundColor;
+            background = {background: "repeating-linear-gradient(-45deg, " + diag_color + ", " + diag_color + " 10px, " + back_color + " 10px, " + back_color + " 20px)"};
+            border = border.border === undefined ? {border: "1px dashed #dc3545"} : border;
         }
 
         return (
