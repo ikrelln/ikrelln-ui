@@ -307,7 +307,7 @@ export class TraceComparator extends Component {
             if (i_with_current === spansWithTopLevel.length) {
                 notice_base.push(spansBaseTopLevel[i_base].id)
             } else {
-                while (i_with + 1 < i_with_current) {
+                while (i_with < i_with_current) {
                     notice_with.push(spansWithTopLevel[i_with].id);
                     i_with += 1;
                 }
@@ -339,17 +339,18 @@ Object.equals = function( x, y ) {
     if ( x.constructor !== y.constructor ) return false;
 
     for ( var p in x ) {
-      if ( ! x.hasOwnProperty( p ) ) continue;  
-      if ( ! y.hasOwnProperty( p ) ) return false;
-      if ( x[ p ] === y[ p ] ) continue;
-      if ( typeof( x[ p ] ) !== "object" ) return false;
-      if ( ! Object.equals( x[ p ],  y[ p ] ) ) return false;
+        if (p === "peer.hostname") continue;
+        if ( ! x.hasOwnProperty( p ) ) continue;  
+        if ( ! y.hasOwnProperty( p ) ) return false;
+        if ( x[ p ] === y[ p ] ) continue;
+        if ( typeof( x[ p ] ) !== "object" ) return false;
+        if ( ! Object.equals( x[ p ],  y[ p ] ) ) return false;
     }
   
     for ( p in y ) {
-      if ( y.hasOwnProperty( p ) && ! x.hasOwnProperty( p ) ) return false;
+        if (p === "peer.hostname") continue;
+        if ( y.hasOwnProperty( p ) && ! x.hasOwnProperty( p ) ) return false;
     }
 
     return true;
   }
-  
