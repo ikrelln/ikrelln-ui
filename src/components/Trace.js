@@ -366,6 +366,11 @@ export class TraceComparator extends Component {
                 .forEach(span => spans_aligned_base.push(span));
             i_base += 1;
         }
+        while (i_with < spansWithTopLevel.length) {
+            notice_with.push(spansWithTopLevel[i_with].id);
+            spans_aligned_with.push(spansWithTopLevel[i_with]);
+            i_with += 1;
+        }
 
         return (
             <div style={{position: "relative"}}>
