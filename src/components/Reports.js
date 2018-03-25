@@ -4,23 +4,32 @@ import { Link, Switch, Route } from 'react-router-dom';
 import { statusToColorSuffix, formatDuration } from '../helper';
 import Radium from 'radium';
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap';
+import { InputGroup, Input, InputGroupAddon, InputGroupText } from 'reactstrap';
 import dateFormat from 'dateformat';
 
 export class Reports extends Component {
     constructor(props) {
         super(props);
-    
+
         this.state = {
             environment: undefined,
             group: window.location.hash === "" ? undefined : window.location.hash.substr(1),
+            filter_name: "",
         };
 
         this.handleEnvironmentChange = this.handleEnvironmentChange.bind(this);
+        this.handleNameChange = this.handleNameChange.bind(this);
         this.filterByGroup = this.filterByGroup.bind(this);
     }
 
     handleEnvironmentChange(environment) {
-        this.setState({environment: environment});
+        this.setState({ environment: environment });
+    }
+
+    handleNameChange(event) {
+        this.setState({
+            filter_name: event.target.value,
+        });
     }
 
     componentDidMount() {
@@ -47,7 +56,7 @@ export class Reports extends Component {
         if (window.location.hash === "") {
             this.setState({
                 group: undefined
-            });            
+            });
         }
     }
 
@@ -74,7 +83,7 @@ export class Reports extends Component {
         return (
             <div>
                 <Switch>
-                    <Route path="/ikrelln/reports/:report_group/:report_name" render={({match}) => {
+                    <Route path="/ikrelln/reports/:report_group/:report_name" render={({ match }) => {
                         const report_key = match.params.report_group + "-" + this.state.environment + "-" + match.params.report_name;
                         return <div>
                             <Report key={report_key} handleEnvironmentChange={this.handleEnvironmentChange} fetchReport={this.props.fetchReport}
@@ -82,49 +91,62 @@ export class Reports extends Component {
                                 report={this.props.report_details === undefined ? undefined : this.props.report_details[report_key]} />
                         </div>
                     }} />
-                    <Route path="/ikrelln/reports" render={({match}) => {
+                    <Route path="/ikrelln/reports" render={({ match }) => {
                         return (
-                            <div style={{display: "flex", flexDirection: "column"}}>
-                                {groups.length > 1
-                                    ? <div key={this.state.group} style={{display: "flex", justifyContent: "center", padding: "0.5em 0"}}>
-                                        {groups.map(group => <div className={"btn btn-sm btn-" + (this.state.group === group ? "info" : this.state.group === undefined ? "primary" : "light")}
-                                            style={{textTransform: "capitalize", margin: "0 0.5em"}} key={group} onClick={() => this.filterByGroup(group)}>{group}</div>
-                                        )}
+                            <div style={{ display: "flex", flexDirection: "column" }}>
+                                <div style={{ display: "flex", marginBottom: "0.25em" }}>
+                                    <InputGroup style={{ margin: "0 1em", flex: "1" }}>
+                                        <InputGroupAddon addonType="prepend">
+                                            <InputGroupText>Report Name</InputGroupText>
+                                        </InputGroupAddon>
+                                        <Input value={this.state.filter_name} onChange={this.handleNameChange} />
+                                    </InputGroup>
+                                    <div style={{ flex: "3", border: "1px solid #ced4da", borderRadius: "0.25rem", marginRight: "1rem" }}>
+                                        {groups.length > 1
+                                            ? <div key={this.state.group} style={{ display: "flex", justifyContent: "center", padding: "0.5em 0" }}>
+                                                {groups.map(group => <div className={"btn btn-sm btn-" + (this.state.group === group ? "info" : this.state.group === undefined ? "primary" : "light")}
+                                                    style={{ textTransform: "capitalize", margin: "0 0.5em" }} key={group} onClick={() => this.filterByGroup(group)}>{group}</div>
+                                                )}
+                                            </div>
+                                            : null
+                                        }
                                     </div>
-                                    : null
-                                }
-                                <div style={{display: "flex", flexWrap: "wrap"}} key={this.state.group + "-all"}>
+                                </div>
+                                <div style={{ display: "flex", flexWrap: "wrap" }} key={this.state.group + "-all"}>
                                     {this.props.reports.filter(report => {
                                         if (this.state.group === undefined)
                                             return true;
                                         return report.group === this.state.group;
-                                    }).map(report => 
-                                        {
-                                            let display_category = false;
-                                            const period = this.dateToPeriod(report.last_update);
-                                            if (current_period !== period) {
-                                                display_category = true;
-                                                current_period = period
-                                            }
-                                            return (
-                                                <React.Fragment key={"frag" + report.group + "-" + report.name}>
-                                                    {display_category ? <div key={period} className="alert alert-info" style={{flex: "0 1 100%", margin: "0.2em 0", padding: "0.2em 0"}}>{period}</div> : null}
-                                                    <Link key={report.group + "-" + report.name} to={"/ikrelln/reports/" + report.group + "/" + report.name} 
-                                                        style={{flex: "1", margin: "0.5em", padding: "0.5em", minWidth: "15em", minHeight: "7em",
-                                                            display: "flex", flexDirection: "column", border: "1px dashed grey", borderRadius: "10px", justifyContent: "center"}}>
-                                                        <div style={{flex: "2", display: "flex", flexDirection: "column", justifyContent: "center"}}>
-                                                            <div style={{textTransform: "capitalize"}}>{report.group} - {report.name}</div>
-                                                            <div style={{fontSize: "xx-small", fontStyle: "italic"}}>{report.last_update}</div>
-                                                        </div>
-                                                        <div className="progress">
-                                                            {Object.keys(report.summary).sort().map(key => 
-                                                                <div className={"progress-bar bg" + statusToColorSuffix(key)} key={key} style={{flex: report.summary[key]}}>{report.summary[key] !== 0 ? report.summary[key] : null}</div>
-                                                            )}
-                                                        </div>
-                                                    </Link>
-                                                </React.Fragment>   
-                                            )
+                                    }).filter(report => {
+                                        return report.name.toLowerCase().includes(this.state.filter_name.toLowerCase());
+                                    }).map(report => {
+                                        let display_category = false;
+                                        const period = this.dateToPeriod(report.last_update);
+                                        if (current_period !== period) {
+                                            display_category = true;
+                                            current_period = period
                                         }
+                                        return (
+                                            <React.Fragment key={"frag" + report.group + "-" + report.name}>
+                                                {display_category ? <div key={period} className="alert alert-info" style={{ flex: "0 1 100%", margin: "0.2em 0", padding: "0.2em 0" }}>{period}</div> : null}
+                                                <Link key={report.group + "-" + report.name} to={"/ikrelln/reports/" + report.group + "/" + report.name}
+                                                    style={{
+                                                        flex: "1", margin: "0.5em", padding: "0.5em", minWidth: "15em", minHeight: "7em",
+                                                        display: "flex", flexDirection: "column", border: "1px dashed grey", borderRadius: "10px", justifyContent: "center"
+                                                    }}>
+                                                    <div style={{ flex: "2", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                                                        <div style={{ textTransform: "capitalize" }}>{report.group} - {report.name}</div>
+                                                        <div style={{ fontSize: "xx-small", fontStyle: "italic" }}>{report.last_update}</div>
+                                                    </div>
+                                                    <div className="progress">
+                                                        {Object.keys(report.summary).sort().map(key =>
+                                                            <div className={"progress-bar bg" + statusToColorSuffix(key)} key={key} style={{ flex: report.summary[key] }}>{report.summary[key] !== 0 ? report.summary[key] : null}</div>
+                                                        )}
+                                                    </div>
+                                                </Link>
+                                            </React.Fragment>
+                                        )
+                                    }
                                     )}
                                 </div>
                             </div>
@@ -139,7 +161,7 @@ export class Reports extends Component {
 class Report extends Component {
     constructor(props) {
         super(props);
-    
+
         this.state = {
             redirected: window.location.hash === "",
             current_hash: "",
@@ -204,10 +226,10 @@ class Report extends Component {
             const hash = window.location.hash;
             if ((!this.state.redirected) || ((hash !== "") && (this.state.current_hash !== hash))) {
                 window.history.replaceState({}, "i'Krelln", window.location.href.split("#")[0])
-                setTimeout(function(){ 
+                setTimeout(function () {
                     window.history.replaceState({}, "i'Krelln", window.location.href.split("#")[0] + hash)
-                 }, 300);
-                 this.setState({
+                }, 300);
+                this.setState({
                     redirected: true,
                     current_hash: hash,
                 });
@@ -224,9 +246,9 @@ class Report extends Component {
         const hash = window.location.hash;
         if ((!this.state.redirected) || ((hash !== "") && (this.state.current_hash !== hash))) {
             window.history.replaceState({}, "i'Krelln", window.location.href.split("#")[0])
-            setTimeout(function(){ 
+            setTimeout(function () {
                 window.history.replaceState({}, "i'Krelln", window.location.href.split("#")[0] + hash)
-             }, 300);
+            }, 300);
             this.setState({
                 redirected: true,
                 current_hash: hash,
@@ -245,10 +267,10 @@ class Report extends Component {
 
         return (
             <div>
-                <h2 style={{textTransform: "capitalize"}}>{this.props.report_group} - {this.props.report_name}</h2>
+                <h2 style={{ textTransform: "capitalize" }}>{this.props.report_group} - {this.props.report_name}</h2>
                 <div>
-                    <div style={{display: "flex"}}>
-                        <div className="input-group" style={{margin: "0 1rem"}}>
+                    <div style={{ display: "flex" }}>
+                        <div className="input-group" style={{ margin: "0 1rem" }}>
                             <div className="input-group-prepend">
                                 <label className="input-group-text">By Status</label>
                             </div>
@@ -259,7 +281,7 @@ class Report extends Component {
                                 <option>Skipped</option>
                             </select>
                         </div>
-                        <div className="input-group" style={{margin: "0 1rem"}}>
+                        <div className="input-group" style={{ margin: "0 1rem" }}>
                             <div className="input-group-prepend">
                                 <label className="input-group-text">Environment</label>
                             </div>
@@ -267,11 +289,11 @@ class Report extends Component {
                                 {this.props.report.environments.map(env => <option key={env}>{env}</option>)}
                             </select>
                         </div>
-                        <div className="input-group" style={{margin: "0 1rem"}}>
+                        <div className="input-group" style={{ margin: "0 1rem" }}>
                             <div className="input-group-prepend">
                                 <label className="input-group-text">By Name</label>
                             </div>
-                            <input type="text" className="form-control" value={this.state.filter.name} onChange={this.handleNameChange}/>
+                            <input type="text" className="form-control" value={this.state.filter.name} onChange={this.handleNameChange} />
                         </div>
                     </div>
 
@@ -288,39 +310,41 @@ class Report extends Component {
                                 return true;
                             return tr.name.toLowerCase().includes(this.state.filter.name.toLowerCase());
                         });
-                        let showing = this.state.full_categories.includes(cat) ? tests : tests.slice(0, tests_to_show);                        
+                        let showing = this.state.full_categories.includes(cat) ? tests : tests.slice(0, tests_to_show);
                         return (
-                            <div key={cat} id={cat} style={{display: "flex", borderBottom: "1px solid gray", padding: "0.7em 0",
-                                backgroundColor: this.state.current_hash.substr(1) === cat ? "#E8E8E8" : (index % 2 === 1 ? "#F9F9F9" : "#FEFEFE"), ':hover': {backgroundColor: "rgba(180, 180, 180, 0.2)"}}}>
-                                <div style={{fontWeight: "bolder", flex: "1", minWidth: "400px", maxWidth: "400px", display: "flex", alignItems: "center"}}>
-                                    <Link to={"/ikrelln/reports/" + this.props.report_group + "/" + this.props.report_name + "#" + cat} style={{textAlign: "left"}}>{cat}</Link>
+                            <div key={cat} id={cat} style={{
+                                display: "flex", borderBottom: "1px solid gray", padding: "0.7em 0",
+                                backgroundColor: this.state.current_hash.substr(1) === cat ? "#E8E8E8" : (index % 2 === 1 ? "#F9F9F9" : "#FEFEFE"), ':hover': { backgroundColor: "rgba(180, 180, 180, 0.2)" }
+                            }}>
+                                <div style={{ fontWeight: "bolder", flex: "1", minWidth: "400px", maxWidth: "400px", display: "flex", alignItems: "center" }}>
+                                    <Link to={"/ikrelln/reports/" + this.props.report_group + "/" + this.props.report_name + "#" + cat} style={{ textAlign: "left" }}>{cat}</Link>
                                 </div>
-                                <div style={{display: "flex", flex: "4", flexWrap: "wrap", justifyContent: "flex-start"}}>
+                                <div style={{ display: "flex", flex: "4", flexWrap: "wrap", justifyContent: "flex-start" }}>
                                     {showing.map(test =>
                                         <div id={"t-" + index + "-" + test.trace_id} key={test.trace_id}>
                                             <Link key={test.test_id} onMouseEnter={(event) => this.mouseOverTest(event, index, test.trace_id)} onMouseLeave={this.mouseLeaveTest}
-                                                    className={"btn btn-sm btn" + statusToColorSuffix(test.status)}
-                                                    to={"/ikrelln/tests/" + test.test_id + "/results/" + test.trace_id} style={{margin: "0.3em"}}>
-                                                    {this.state.over_test === test.trace_id
-                                                        ? <div style={{width: "1em"}}>x</div>
-                                                        : <div style={{width: "1em"}}>&nbsp;</div>
-                                                    }
+                                                className={"btn btn-sm btn" + statusToColorSuffix(test.status)}
+                                                to={"/ikrelln/tests/" + test.test_id + "/results/" + test.trace_id} style={{ margin: "0.3em" }}>
+                                                {this.state.over_test === test.trace_id
+                                                    ? <div style={{ width: "1em" }}>x</div>
+                                                    : <div style={{ width: "1em" }}>&nbsp;</div>
+                                                }
                                             </Link>
-                                            { (this.state.over_test === test.trace_id) && (this.state.over_category === index) ? 
-                                                <Popover placement="left" isOpen={(this.state.over_test === test.trace_id) && (this.state.over_category === index)} 
+                                            {(this.state.over_test === test.trace_id) && (this.state.over_category === index) ?
+                                                <Popover placement="left" isOpen={(this.state.over_test === test.trace_id) && (this.state.over_category === index)}
                                                     target={"#t-" + index + "-" + test.trace_id} toggle={this.toggle}>
                                                     <PopoverHeader>{test.name}</PopoverHeader>
                                                     <PopoverBody>
                                                         <div>
-                                                            <ol className="breadcrumb" style={{padding: "0", backgroundColor: "inherit"}}>
-                                                                {test.path.map(item => 
+                                                            <ol className="breadcrumb" style={{ padding: "0", backgroundColor: "inherit" }}>
+                                                                {test.path.map(item =>
                                                                     <li className="breadcrumb-item" key={item}>{item}</li>
                                                                 )}
                                                             </ol>
-                                                            <div style={{fontSize: "smaller", fontStyle: "italic"}}>
+                                                            <div style={{ fontSize: "smaller", fontStyle: "italic" }}>
                                                                 {dateFormat(new Date(test.date / 1000), "isoDateTime")}
                                                             </div>
-                                                            <div style={{fontSize: "smaller"}}>
+                                                            <div style={{ fontSize: "smaller" }}>
                                                                 took {formatDuration(test.duration)}
                                                             </div>
                                                         </div>
@@ -331,7 +355,7 @@ class Report extends Component {
                                         </div>
                                     )}
                                     {!this.state.full_categories.includes(cat) && tests.length > tests_to_show
-                                        ? <div className="btn btn-sm btn-info" style={{margin: "0.3em"}} onClick={(event) => this.showFullCategory(cat)}>
+                                        ? <div className="btn btn-sm btn-info" style={{ margin: "0.3em" }} onClick={(event) => this.showFullCategory(cat)}>
                                             and {tests.length - tests_to_show} more...
                                         </div>
                                         : null
