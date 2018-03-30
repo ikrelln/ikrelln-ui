@@ -8,7 +8,7 @@
     "cross-fetch": "^1.1.1",
     "dateformat": "^3.0.3",
     "moment": "^2.21.0",
-    "radium": "^0.22.0",
+    "radium": "^0.24.0",
     "react": "^16.2.0",
     "react-datetime": "^2.14.0",
     "react-dom": "^16.3.0",
