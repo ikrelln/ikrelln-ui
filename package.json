@@ -9,7 +9,7 @@
     "dateformat": "^3.0.3",
     "moment": "^2.22.2",
     "radium": "^0.24.0",
-    "react": "^16.4.0",
+    "react": "^16.4.1",
     "react-datetime": "^2.14.0",
     "react-dom": "^16.4.0",
     "react-popper": "^0.10.4",
