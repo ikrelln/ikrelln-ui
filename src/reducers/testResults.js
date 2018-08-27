@@ -15,7 +15,7 @@ const testResults = (state = { results: [], environments: [], filter: {} }, acti
             });
             new_test_results.sort(sortByDate);
             return Object.assign({}, state, {
-                results: new_test_results,
+                results: new_test_results.filter(tr => tr !== undefined),
             })
         case RECEIVE_TEST_RESULT_FOR_TRACE:
             if (state.results.find(tr => tr.trace_id === action.testResult[0].trace_id) !== undefined) {
@@ -24,7 +24,7 @@ const testResults = (state = { results: [], environments: [], filter: {} }, acti
             var new_test_results = [...state.results, action.testResult[0]];
             new_test_results.sort(sortByDate);
             return Object.assign({}, state, {
-                results: new_test_results,
+                results: new_test_results.filter(tr => tr !== undefined),
             })
         case FILTER_TEST_RESULTS:
             return Object.assign({}, state, {
